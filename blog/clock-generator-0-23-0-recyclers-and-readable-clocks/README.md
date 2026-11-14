@@ -40,7 +40,9 @@ Processing unit sample with a belt export, on one desktop machine. The times com
 | --- | --- | --- |
 | Generation, belts moving | 260 s | 68 s |
 | Generation, belts backed up | 231 s | 62 s |
-| Peak memory | 3.10 GiB | 2.65 GiB |
+| Peak memory (#433 alone) | 3.10 GiB | 2.65 GiB |
+
+The memory row is a different measurement from the one in the next post, which starts the same sample at 3,282 MB.
 
 ## What came next
 

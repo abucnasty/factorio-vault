@@ -2,7 +2,7 @@
 status: draft
 title: "Measure first: the loss trials that found nothing"
 date: "2026-11-14"
-description: Before redesigning the loss trials, I measured what each stage costs and finds. The other starts found nothing and took 72 % of the time.
+description: Before redesigning the loss trials, I measured what each stage costs and finds. The other starts found nothing and took 72 % of the loss trials' time.
 tags: [clock-generator, discovery, recovery]
 ---
 

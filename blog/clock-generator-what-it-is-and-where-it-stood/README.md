@@ -32,7 +32,7 @@ The generator has two goals, in order. Goal 1: the clock meets its target exactl
 
 ## The first 21 days
 
-The first tag, v0.1.0, is dated 3 October 2026. Release 0.22.0 is dated 24 October. In between there are 29 tagged versions.
+The first tag, v0.1.0, is dated 3 October 2026. Release 0.22.0 is dated 24 October. 0.22.0 is the 29th tagged version.
 
 | Version | Date | What it added |
 | --- | --- | --- |
@@ -40,7 +40,7 @@ The first tag, v0.1.0, is dated 3 October 2026. Release 0.22.0 is dated 24 Octob
 | 0.18.0 | 18 Oct | Belt pickups modelled from the stacks within reach; straight or underground pickups chosen per inserter |
 | 0.19.0 | 21 Oct | Belt pickups match the game at all four belt speeds; stable verdicts stricter |
 | 0.20.0 | 23 Oct | Cars, tanks, cargo wagons and rocket silos as chests; mining drills that drop into a chest |
-| 0.21.0 | 23 Oct | Drops onto a side-loading belt marked; machines picked by what they are and their quality |
+| 0.21.0 | 23 Oct | Drops onto a side-loading belt marked; machines picked from the row's machine icon, with groups and search |
 | 0.22.0 | 24 Oct | Clocks for cells whose machines draw from one source, and for direct insertion |
 
 Three things from this stretch matter later.

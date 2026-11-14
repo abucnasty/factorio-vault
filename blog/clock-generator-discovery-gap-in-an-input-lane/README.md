@@ -2,7 +2,7 @@
 status: draft
 title: "The gap in an input lane"
 date: "2026-11-13"
-description: A clock that holds for one copy can lose crafts when copies share a belt lane. A row of assemblers in the game shows it.
+description: Input inserters that share a belt lane can lose crafts to the gaps each other leave. A row of assemblers in the game shows it.
 tags: [clock-generator, discovery, belts]
 ---
 
@@ -52,9 +52,9 @@ The engine gets the same answer from the config alone. For two assemblers 3 tile
 
 ## What changed
 
-The game and the engine's lane check agree. So 0.29.0 runs every copy of a build on the lanes the copies share ([#748](https://github.com/abucnasty/clock-generator/pull/748)). The commit that checks a shared lane with every copy's machines and inserters is dated 9 November. The game recording of the row is dated 13 November.
+The game and the engine's lane check agree. 0.29.0 runs every copy of a build on the lanes the copies share ([#748](https://github.com/abucnasty/clock-generator/pull/748)). The commit that checks a shared lane with every copy's machines and inserters is dated 9 November. The game recording of the row is dated 13 November.
 
-The record shows how common the miss is. What the old clock lost on the shared lane:
+The row in the game is several inserters of one build on one lane. For copies, the evidence is the record of moves, which shows how common the miss is. What the old clock lost on the shared lane:
 
 | Sample | Loss |
 | --- | --- |

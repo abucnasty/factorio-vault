@@ -37,7 +37,7 @@ On the circuit export sample the effect is large. On its recommended clock, the 
 
 ## What did not ship
 
-[Issue 530](https://github.com/abucnasty/clock-generator/issues/530) proposes to rank clocks that hold and recover by a priced cost estimate, with ties parted by recovery. It is still open. The generator still selects the clock with the fewest wakeups among those that meet goal 1. The tie rule of that title, recovery, is in 0.26.0.
+[Pull request 530](https://github.com/abucnasty/clock-generator/pull/530) proposes to rank clocks that hold and recover by a priced cost estimate, with ties parted by recovery. It is still open. The generator still selects the clock with the fewest wakeups among those that meet goal 1. The tie rule of that title, recovery, is in 0.26.0.
 
 ## What came next
 
