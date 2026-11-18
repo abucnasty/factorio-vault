@@ -25,6 +25,9 @@
  * offline although its objects stay in R2. The same goes for wiki pages and
  * files and the wiki index.
  *
+ * Wiki drafts (wiki-drafts/ in the catalog bucket) are never served here,
+ * by any path: the site's Worker shows them to signed-in wiki editors.
+ *
  * <path> is the index's path (relative to blueprints/): the longest
  * blueprint folder that prefixes the request (folders never nest, so there
  * is one); what follows it is a slot path. A path listed in some
@@ -58,6 +61,8 @@ const WIKI = "wiki";
 const WIKI_INDEX_KEY = `${WIKI}/index.json`;
 /** Where the wiki's files are served and stored, under WIKI. */
 const WIKI_FILES = "files";
+/** R2 prefix of the wiki's drafts: private, never read by this Worker. */
+const WIKI_DRAFTS = "wiki-drafts/";
 /** The vault folder, URL prefix and R2 key prefix of blueprints. */
 const BLUEPRINTS = "blueprints";
 /** Where strings were stored before they moved under blueprints/ on 2026-11-14; never rewritten, so still read. */
@@ -283,6 +288,7 @@ export function createHandler(now: () => number = Date.now) {
     if (path === INDEX_KEY) {
       return (await serveObject(env.CATALOG, INDEX_KEY, request, JSON_TYPE, CACHE_SHORT)) ?? unavailable();
     }
+    if (path.startsWith(WIKI_DRAFTS) || path === WIKI_DRAFTS.slice(0, -1)) return notFound(`Not found. ${WIKI_USAGE}`);
     if (path.startsWith(BLOG + "/") && path.length > BLOG.length + 1) return blogRoute(path.slice(BLOG.length + 1), url, request, env);
     if (path.startsWith(WIKI + "/") && path.length > WIKI.length + 1) return wikiRoute(path.slice(WIKI.length + 1), url, request, env);
     if (!path.startsWith(BLUEPRINTS + "/")) return notFound(`Not found. ${USAGE} ${BLOG_USAGE} ${WIKI_USAGE}`);
@@ -442,6 +448,8 @@ async function serveObject(
   cacheControl: string,
   extra: Record<string, string> = {},
 ): Promise<Response | null> {
+  // Belt and braces: no route builds such a key, and none may.
+  if (key.startsWith(WIKI_DRAFTS)) return null;
   const tags = (request.headers.get("If-None-Match") ?? "")
     .split(",")
     .map((t) => t.trim().replace(/^W\//, "").replace(/^"(.*)"$/, "$1"))
