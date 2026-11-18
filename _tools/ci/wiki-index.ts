@@ -7,16 +7,21 @@
 // R2 keys in factorio-blueprints-catalog:
 //   wiki/index.json             this file
 //   wiki/<slug>.md              a page's markdown: frontmatter and %% comments removed
-//   wiki/files/<published>      an image a page shows, as published (PNG, JPEG
-//                               and WebP converted to WebP; a GIF as it is,
-//                               unless it is stored with Git LFS: then it is
-//                               served from factorio-blueprints-lfs by its oid)
+//   wiki/files/<published>      an image a page or a draft shows, as published
+//                               (PNG, JPEG and WebP converted to WebP; a GIF as
+//                               it is, unless it is stored with Git LFS: then it
+//                               is served from factorio-blueprints-lfs by its oid)
+//   wiki-drafts/index.json      the drafts, in this same shape (their `files`
+//                               are the entries of this index they use)
+//   wiki-drafts/<slug>.md       a draft's markdown
 // Only pages and files in this index are served: objects of a page that left
 // it (a draft again, renamed or deleted) stay in the bucket but are not
 // reachable.
 //
-// Drafts are simply absent. A later schema can list them for signed-in
-// editors without changing what the public reads.
+// Drafts are absent from wiki/index.json; their images are listed in it (so
+// the link Worker serves them, and they keep working once the draft is
+// published). The link Worker never serves anything under wiki-drafts/:
+// the site's Worker reads it from R2 for signed-in wiki editors.
 
 export interface WikiIndex {
   /** Bumped on any change a reader must know about. */
@@ -25,9 +30,9 @@ export interface WikiIndex {
   generatedAt: string;
   /** The repo commit it was built from (full SHA). */
   commit: string;
-  /** Published pages (not drafts), by title ignoring case. */
+  /** Published pages (not drafts), by title ignoring case; in the drafts' index, the drafts. */
   pages: WikiPage[];
-  /** Every file a published page shows or links to, by path. */
+  /** Every file a published page or a draft shows or links to, by path; in the drafts' index, the drafts' files. */
   files: WikiFile[];
 }
 
@@ -44,7 +49,7 @@ export interface WikiPage {
   headings: { depth: number; text: string; id: string }[];
   /** Plain text from the start of the page, at most 200 characters, for search and link previews. */
   excerpt: string;
-  /** Slugs of the published pages it links to (itself excluded), sorted. */
+  /** Slugs of the published pages it links to (itself excluded), sorted; a draft's may name other drafts. */
   links: string[];
   /** Paths (as in `files`) of the files it shows or links to, sorted. */
   files: string[];

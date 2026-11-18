@@ -386,14 +386,16 @@ not part of addresses.
   Slugs are unique too, and `all` is the site's (its list of pages).
   `wiki/Home.md` is the front page, at `/wiki`.
 - **Frontmatter**: only two keys mean anything, and it is never shown.
-  `draft: true` keeps the page off the site (links to it show as a missing
-  page). `aliases:` (Obsidian's own list) holds former titles: the address
+  `draft: true` keeps the page off the public site: only wiki editors
+  signed in on abucnasty.dev see it, marked "Draft"; for everyone else
+  links to it show as a missing page. `aliases:` (Obsidian's own list) holds former titles: the address
   of each redirects to the page, and links by an alias resolve to it. An
   alias may not be another page's title or address.
 - **Links**: `[[Page]]`, `[[Page|label]]`, `[[Page#Heading]]` and
   `[label](relative/path/Page.md#Heading)` (as Obsidian writes them here,
   URL-encoded) resolve by title, wherever the page is, as in Obsidian. A
-  link to a missing or draft page shows as a missing page.
+  link to a missing page (or, for visitors who are not wiki editors, a
+  draft) shows as a missing page.
 - **Images**: `![[image.png]]`, `![[image.png|400]]` (width in pixels) and
   `![alt](relative/path.png)`, resolved by file name: the page's own
   `_attachments/` first, then its folder, then anywhere in `wiki/`. Images
@@ -411,12 +413,17 @@ images published pages show or link to, at `wiki/files/<published path>`
 (PNG, JPEG and WebP as WebP, longest side at most 1600 px, quality 85, see
 `_tools/ci/wiki-images.ts`; GIFs as they are, at most 5 MB, and one stored
 with LFS is served from the LFS bucket), only new or changed ones; each
-page's markdown without frontmatter and comments at `wiki/<slug>.md`; then
-`wiki/index.json` (schema: `_tools/ci/wiki-index.ts`). Files in the vault
+page's markdown without frontmatter and comments at `wiki/<slug>.md`, and
+each draft's at `wiki-drafts/<slug>.md`; then `wiki/index.json` and
+`wiki-drafts/index.json` (schema: `_tools/ci/wiki-index.ts`). Drafts' images
+are published under `wiki/files/` and listed in `wiki/index.json` like any
+other (the vault is public), so they work for editors and once the draft
+is published. Files in the vault
 are never rewritten. To compress an LFS image CI fetches it from the LFS
 server, so it must have been pushed with git-lfs. The link Worker serves
 those under `https://vault.abucnasty.dev/wiki/` for the pages and files in
-`wiki/index.json` only. A duplicate title or address, an alias taken by
+`wiki/index.json` only, and never anything under `wiki-drafts/`: the
+site's Worker reads that from R2 for signed-in wiki editors. A duplicate title or address, an alias taken by
 another page, unreadable frontmatter or a GIF over 5 MB fails the run; the
 page keeps its last published version, and the other pages are published.
 

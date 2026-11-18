@@ -10,7 +10,7 @@ import { after, test } from "node:test";
 
 import sharp from "sharp";
 
-import { buildWiki, carryOverPages, GIF_MAX_BYTES, wikiIndexObject, wikiObjects, type WikiFileHooks } from "../build-wiki.ts";
+import { buildWiki, carryOverPages, GIF_MAX_BYTES, wikiDraftsIndexObject, wikiIndexObject, wikiObjects, type WikiFileHooks } from "../build-wiki.ts";
 import { CONVERT_NAME, MAX_SIDE, toWebp } from "../wiki-images.ts";
 
 process.env["GIT_CONFIG_GLOBAL"] = "/dev/null";
@@ -158,8 +158,8 @@ test("images: resolved Obsidian style, converted to WebP (LFS or plain git), GIF
   r.write("wiki/Guides/_attachments/huge.gif", hugeGif);
   r.write("wiki/Guides/logo.png", small); // plain git, beside the page
   r.write("wiki/Elsewhere/_attachments/logo.png", small); // same name, further away: not chosen
-  r.write("wiki/Elsewhere/_attachments/unused.png", small); // no published page uses it
-  r.write("wiki/Draft.md", "---\ndraft: true\n---\n![[unused.png]]\n");
+  r.write("wiki/Elsewhere/_attachments/unused.png", small); // no page or draft uses it
+  r.write("wiki/Draft.md", "---\ndraft: true\n---\nNot yet.\n");
   r.write("wiki/Plain.md", "A [[Page]] link and a ![gif](Guides/plain.gif).\n");
   r.write("wiki/Guides/plain.gif", GIF);
   r.commit();
@@ -180,6 +180,7 @@ test("images: resolved Obsidian style, converted to WebP (LFS or plain git), GIF
       ["wiki/files/Guides/plain.gif", "image/gif"],
       ["wiki/page.md", "text/markdown; charset=utf-8"],
       ["wiki/plain.md", "text/markdown; charset=utf-8"],
+      ["wiki-drafts/draft.md", "text/markdown; charset=utf-8"],
       ["wiki/index.json", "application/json; charset=utf-8"],
     ],
   );
@@ -211,11 +212,11 @@ test("images: resolved Obsidian style, converted to WebP (LFS or plain git), GIF
     "Guides/logo.png",
   ]);
 
-  // Against that index as live: nothing changed, so only the index is written and nothing is converted.
+  // Against those indexes as live: nothing changed, so only the indexes are written and nothing is converted.
   const live = JSON.parse(objects.at(-1)!.body as string);
   const again = buildWiki(r.dir);
   const h2 = hooks(new Map([[lfsBig.oid, big]]));
-  assert.deepEqual(await wikiObjects(again, live, h2), []);
+  assert.deepEqual(await wikiObjects(again, live, h2, undefined, wiki.draftIndex), []);
   assert.deepEqual(h2.converted, []);
   assert.deepEqual(again.index.files, wiki.index.files);
 
@@ -224,4 +225,63 @@ test("images: resolved Obsidian style, converted to WebP (LFS or plain git), GIF
   await wikiObjects(third, undefined, hooks());
   assert.match(third.problems.map((p) => `${p.path}: ${p.message}`).join("\n"), /shot\.png: could not be published: no LFS object/);
   assert.ok(!third.index.pages.find((p) => p.slug === "page")!.files.includes("Guides/_attachments/shot.png"));
+});
+
+test("drafts: built into wiki-drafts/ (index and markdown), never into the public index; their images are public; moving in and out of draft", async () => {
+  const r = repo();
+  const small = await png(32, 32);
+  r.write("wiki/Home.md", "See [[Checklist]] and [[Guide]].\n");
+  r.write("wiki/Guide.md", "A published guide.\n");
+  r.write("wiki/Checklist.md", "---\ndraft: true\naliases: [Old Checklist]\n---\n%% note %%\n## Steps\n\nRead [[Guide]] and [[Other Draft]]. ![[shot.png]]\n");
+  r.write("wiki/_attachments/shot.png", small);
+  r.write("wiki/Other Draft.md", "---\ndraft: true\n---\nWIP.\n");
+  r.write("wiki/Checklist Copy.md", "---\ndraft: true\n---\nsame address as nothing, fine\n");
+  r.write("wiki/checklist.md.bak", "not a page");
+  r.commit();
+
+  const wiki = buildWiki(r.dir);
+  assert.deepEqual(wiki.problems, []);
+  assert.deepEqual(wiki.index.pages.map((p) => p.slug), ["guide", "home"]);
+  assert.deepEqual(wiki.index.pages.find((p) => p.slug === "home")!.links, ["guide"], "published pages do not link to drafts");
+  assert.deepEqual(wiki.draftIndex.pages.map((p) => [p.slug, p.links]), [
+    ["checklist", ["guide", "other-draft"]],
+    ["checklist-copy", []],
+    ["other-draft", []],
+  ]);
+  assert.deepEqual(wiki.draftIndex.pages[0]!.headings.map((h) => h.id), ["steps"]);
+  assert.equal(wiki.draftBodies.get("checklist"), "## Steps\n\nRead [[Guide]] and [[Other Draft]]. ![[shot.png]]\n");
+
+  const objects = [...(await wikiObjects(wiki, undefined, hooks())), wikiIndexObject(wiki), wikiDraftsIndexObject(wiki)];
+  assert.deepEqual(objects.map((o) => o.key), [
+    "wiki/files/_attachments/shot.webp",
+    "wiki/guide.md",
+    "wiki/home.md",
+    "wiki-drafts/checklist.md",
+    "wiki-drafts/checklist-copy.md",
+    "wiki-drafts/other-draft.md",
+    "wiki/index.json",
+    "wiki-drafts/index.json",
+  ]);
+  const pub = JSON.parse(objects.at(-2)!.body as string);
+  const drafts = JSON.parse(objects.at(-1)!.body as string);
+  // The public index names no draft, but lists the draft's image so the vault host serves it.
+  assert.doesNotMatch(objects.at(-2)!.body as string, /"(slug|title)":"(checklist|other draft|other-draft|checklist copy|checklist-copy)"/i);
+  assert.deepEqual(pub.files.map((f: { path: string }) => f.path), ["_attachments/shot.png"]);
+  assert.deepEqual(drafts.files, pub.files);
+  assert.ok(objects.filter((o) => o.key.startsWith("wiki/")).every((o) => !String(o.body).includes("WIP")));
+
+  // Unchanged against the live indexes: nothing but the indexes.
+  assert.deepEqual(await wikiObjects(buildWiki(r.dir), pub, hooks(), undefined, drafts), []);
+
+  // Published: it moves to the public index (its markdown under wiki/), and leaves the drafts.
+  r.write("wiki/Checklist.md", "## Steps\n\nNow live. ![[shot.png]]\n");
+  // And a published page set back to draft leaves the public index and joins the drafts.
+  r.write("wiki/Guide.md", "---\ndraft: true\n---\nBack to work.\n");
+  r.commit();
+  const moved = buildWiki(r.dir);
+  const keys = (await wikiObjects(moved, pub, hooks(), undefined, drafts)).map((o) => o.key);
+  assert.deepEqual(moved.index.pages.map((p) => p.slug), ["checklist", "home"]);
+  assert.deepEqual(moved.draftIndex.pages.map((p) => p.slug), ["checklist-copy", "guide", "other-draft"]);
+  assert.deepEqual(keys, ["wiki/checklist.md", "wiki-drafts/guide.md"]);
+  assert.deepEqual(moved.index.pages.find((p) => p.slug === "home")!.links, ["checklist"]);
 });

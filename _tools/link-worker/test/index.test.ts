@@ -539,3 +539,30 @@ test("wiki: pages and files the index does not list are not served; without an i
   assert.equal((await bare.req("/wiki/home.md")).status, 503);
   assert.equal((await bare.req("/wiki/files/a.webp")).status, 503);
 });
+
+test("wiki drafts: nothing under wiki-drafts/ is served, by any path", async () => {
+  const { req, catalog } = wikiSetup();
+  catalog.put("wiki-drafts/index.json", JSON.stringify({ schema: 1, pages: [{ slug: "secret-draft" }], files: [] }));
+  catalog.put("wiki-drafts/secret-draft.md", "draft text");
+  for (const path of [
+    "/wiki-drafts/index.json",
+    "/wiki-drafts/secret-draft.md",
+    "/wiki-drafts",
+    "/wiki-drafts/",
+    "/wiki%2Ddrafts/index.json",
+    "/wiki/..%2Fwiki-drafts%2Findex.json",
+    "/wiki/%2E%2E%2Fwiki-drafts%2Fsecret-draft.md",
+    "/wiki/files/..%2F..%2Fwiki-drafts%2Fsecret-draft.md",
+    "/wiki/secret-draft.md",
+    "/blog/..%2Fwiki-drafts%2Findex.json",
+    "/blueprints/..%2Fwiki-drafts%2Findex.json",
+  ]) {
+    for (const method of ["GET", "HEAD"]) {
+      const res = await req(path, { method });
+      // 404, or 503 for /blog/ here, where no blog is published.
+      assert.ok(res.status === 404 || (path.startsWith("/blog/") && res.status === 503), `${method} ${path}: ${res.status}`);
+      assert.doesNotMatch(await res.text(), /draft text/, path);
+    }
+  }
+  assert.ok(!catalog.reads.some((k) => k.startsWith("wiki-drafts/")), catalog.reads.join(", "));
+});
