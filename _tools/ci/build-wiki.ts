@@ -8,11 +8,16 @@
 // The CLI is catalog.ts.
 //
 // Pages are every .md under wiki/ outside _attachments folders; a page's
-// title is its file name. Drafts (`draft: true`) never reach R2. A page
-// with problems (a duplicate title or address, an alias taken by another
-// page, unreadable frontmatter) is left out, but one already in the live
-// index keeps its last published entry, marked stale. Only the images
-// published pages show (or link to) are published.
+// title is its file name. Drafts (`draft: true`) are not in the public
+// index: they get their own, wiki-drafts/index.json, and their markdown is
+// wiki-drafts/<slug>.md, a prefix the link Worker never serves (the site's
+// Worker shows them to signed-in wiki editors). A page with problems (a
+// duplicate title or address, an alias taken by another page, unreadable
+// frontmatter) is left out, but a published one already in the live index
+// keeps its last published entry, marked stale. Only the images published
+// pages and drafts show (or link to) are published, all under wiki/files/
+// and listed in the public index (the vault is public anyway), so a draft's
+// images work and keep working when it is published.
 
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
@@ -38,6 +43,9 @@ import { wikiFileType, type WikiFile, type WikiIndex, type WikiPage } from "./wi
 
 export const WIKI_INDEX_KEY = `${WIKI_ROOT}/index.json`;
 export const WIKI_FILES = `${WIKI_ROOT}/files`;
+/** The drafts' R2 prefix: never served by the link Worker. */
+export const WIKI_DRAFTS = "wiki-drafts";
+export const WIKI_DRAFTS_INDEX_KEY = `${WIKI_DRAFTS}/index.json`;
 const MARKDOWN_TYPE = "text/markdown; charset=utf-8";
 /** Images published as WebP (see wiki-images.ts). */
 const CONVERTED = /\.(png|jpe?g|webp)$/i;
@@ -68,11 +76,15 @@ export interface Wiki {
   warnings: string[];
   /** Addresses (slugs) of pages left out for their problems, sorted. */
   invalid: string[];
-  /** Titles of the drafts, sorted: not published. */
+  /** Titles of the valid drafts, sorted: not in the public index. */
   drafts: string[];
+  /** The drafts' index (wiki-drafts/index.json), files filled in by wikiObjects. */
+  draftIndex: WikiIndex;
   /** Each published page's markdown (frontmatter and comments removed), by slug. */
   bodies: Map<string, string>;
-  /** The files published pages use, by path relative to wiki/. */
+  /** Each draft's markdown, likewise, by slug. */
+  draftBodies: Map<string, string>;
+  /** The files published pages and drafts use, by path relative to wiki/. */
   sources: Map<string, WikiSource>;
 }
 
@@ -179,26 +191,33 @@ export function buildWiki(repo: string, opts: { commit?: string; now?: Date } = 
     }
   }
 
-  const drafts = all.filter((c) => c.read.draft && !bad.has(c)).map((c) => c.title).sort();
+  const draftPages = all.filter((c) => c.read.draft && !bad.has(c));
+  const drafts = draftPages.map((c) => c.title).sort();
   const live = published.filter((c) => !bad.has(c));
   const invalid = [...new Set(all.filter((c) => bad.has(c) && !c.read.draft && c.slug !== "").map((c) => c.slug))].sort();
 
-  // Links resolve to published pages by title, then by alias, ignoring case.
+  // Links resolve to published pages by title, then by alias, ignoring case;
+  // a draft's links may also reach other drafts (by title).
   const target = new Map<string, string>();
   for (const c of live) target.set(titleKey(c.title), c.slug);
   for (const c of live) for (const a of c.read.aliases) if (!target.has(titleKey(a))) target.set(titleKey(a), c.slug);
+  const draftTarget = new Map(target);
+  for (const c of draftPages) if (!draftTarget.has(titleKey(c.title))) draftTarget.set(titleKey(c.title), c.slug);
 
   const allFiles = [...fileBlobs.keys()];
   const publishable = allFiles.filter(isPublishable);
   const used = new Map<string, Set<string>>(); // file path -> pages (repo paths) using it
   const pages: WikiPage[] = [];
   const bodies = new Map<string, string>();
-  for (const c of live) {
+  const draftEntries: WikiPage[] = [];
+  const draftBodies = new Map<string, string>();
+  for (const c of [...live, ...draftPages]) {
+    const isDraft = c.read.draft;
     const body = stripWikiComments(c.read.body);
     const scan = scanWikiMarkdown(body);
     const links = new Set<string>();
     for (const t of scan.pages) {
-      const slug = target.get(titleKey(t));
+      const slug = (isDraft ? draftTarget : target).get(titleKey(t));
       if (slug !== undefined && slug !== c.slug) links.add(slug);
     }
     const files = new Set<string>();
@@ -213,7 +232,7 @@ export function buildWiki(repo: string, opts: { commit?: string; now?: Date } = 
       if (other !== undefined) warnings.push(`${c.path}: "${t}" is not published: only PNG, JPEG, WebP and GIF images are`);
       else if (/\.[a-z0-9]{2,5}$/i.test(t)) warnings.push(`${c.path}: no file "${t}" in ${WIKI_ROOT}/ (shown as missing)`);
     }
-    pages.push({
+    (isDraft ? draftEntries : pages).push({
       title: c.title,
       slug: c.slug,
       folder: c.folder,
@@ -224,7 +243,7 @@ export function buildWiki(repo: string, opts: { commit?: string; now?: Date } = 
       files: [...files].sort(),
       blob: c.blob,
     });
-    bodies.set(c.slug, body);
+    (isDraft ? draftBodies : bodies).set(c.slug, body);
   }
 
   // The files those pages use: GIFs over the limit are not published; two images may not publish to one name.
@@ -250,16 +269,20 @@ export function buildWiki(repo: string, opts: { commit?: string; now?: Date } = 
     publishedBy.set(pub, path);
     sources.set(path, { path, published: pub, blob, size, ...(pointer ? { oid: pointer[1]! } : { data }) });
   }
-  for (const p of pages) p.files = p.files.filter((f) => sources.has(f));
+  for (const p of [...pages, ...draftEntries]) p.files = p.files.filter((f) => sources.has(f));
 
   pages.sort(byKey((p) => titleKey(p.title)));
+  draftEntries.sort(byKey((p) => titleKey(p.title)));
+  const generatedAt = (opts.now ?? new Date()).toISOString();
   return {
-    index: { schema: 1, generatedAt: (opts.now ?? new Date()).toISOString(), commit, pages, files: [] },
+    index: { schema: 1, generatedAt, commit, pages, files: [] },
     problems,
     warnings,
     invalid,
     drafts,
+    draftIndex: { schema: 1, generatedAt, commit, pages: draftEntries, files: [] },
     bodies,
+    draftBodies,
     sources,
   };
 }
@@ -305,20 +328,22 @@ export interface WikiFileHooks {
 const version = (data: Buffer) => createHash("sha256").update(data).digest("hex").slice(0, 16);
 
 /**
- * Fill in the index's files and return the objects a publish writes, in
+ * Fill in the indexes' files and return the objects a publish writes, in
  * order: the files that are new or changed since `live` (all of them
  * without it; a GIF stored with LFS is never uploaded, it is served from
- * the LFS bucket), then the pages' markdown (new or changed), then
- * wiki/index.json last, so the live index never names an object that is
- * not there. A file that cannot be read or converted is a problem: it is
- * left out (pages show it as missing). Also reports each converted file's
- * sizes through `log`.
+ * the LFS bucket), then the pages' markdown (new or changed), then the
+ * drafts' markdown (new or changed since `liveDrafts`). The two indexes
+ * (wikiIndexObject, then wikiDraftsIndexObject) are written after these,
+ * so neither ever names an object that is not there. A file that cannot be
+ * read or converted is a problem: it is left out (pages show it as
+ * missing). Also reports each converted file's sizes through `log`.
  */
 export async function wikiObjects(
   wiki: Wiki,
   live: WikiIndex | undefined,
   hooks: WikiFileHooks,
   log: (line: string) => void = () => {},
+  liveDrafts?: WikiIndex,
 ): Promise<WikiObject[]> {
   const liveFiles = new Map((live?.files ?? []).map((f) => [f.path, f]));
   const files: WikiObject[] = [];
@@ -350,7 +375,7 @@ export async function wikiObjects(
       out = await hooks.convert(data);
     } catch (e) {
       wiki.problems.push({ folder: repoPath, path: repoPath, message: `could not be published: ${e instanceof Error ? e.message : String(e)}` });
-      for (const p of wiki.index.pages) p.files = p.files.filter((f) => f !== src.path);
+      for (const p of [...wiki.index.pages, ...wiki.draftIndex.pages]) p.files = p.files.filter((f) => f !== src.path);
       continue;
     }
     log(`  ${repoPath}: ${src.size} -> ${out.length} bytes (${src.published})`);
@@ -358,6 +383,8 @@ export async function wikiObjects(
     files.push({ key: `${WIKI_FILES}/${src.published}`, contentType: type, body: out });
   }
   wiki.index.files = entries;
+  const draftFiles = new Set(wiki.draftIndex.pages.flatMap((p) => p.files));
+  wiki.draftIndex.files = entries.filter((f) => draftFiles.has(f.path));
 
   const livePages = new Map((live?.pages ?? []).map((p) => [p.slug, p.blob]));
   const bodies: WikiObject[] = [];
@@ -365,12 +392,22 @@ export async function wikiObjects(
     if (page.stale || livePages.get(page.slug) === page.blob) continue;
     bodies.push({ key: `${WIKI_ROOT}/${page.slug}.md`, contentType: MARKDOWN_TYPE, body: wiki.bodies.get(page.slug)! });
   }
+  const liveDraftPages = new Map((liveDrafts?.pages ?? []).map((p) => [p.slug, p.blob]));
+  for (const page of wiki.draftIndex.pages) {
+    if (liveDraftPages.get(page.slug) === page.blob) continue;
+    bodies.push({ key: `${WIKI_DRAFTS}/${page.slug}.md`, contentType: MARKDOWN_TYPE, body: wiki.draftBodies.get(page.slug)! });
+  }
   return [...files, ...bodies];
 }
 
-/** The index object, written last. */
+/** The public index object, written after every file and page it names. */
 export function wikiIndexObject(wiki: Wiki): WikiObject {
   return { key: WIKI_INDEX_KEY, contentType: "application/json; charset=utf-8", body: JSON.stringify(wiki.index) };
+}
+
+/** The drafts' index object, written last (after the public index, which lists the drafts' files). */
+export function wikiDraftsIndexObject(wiki: Wiki): WikiObject {
+  return { key: WIKI_DRAFTS_INDEX_KEY, contentType: "application/json; charset=utf-8", body: JSON.stringify(wiki.draftIndex) };
 }
 
 /**

@@ -84,7 +84,8 @@ Make a note anywhere under `wiki/`. Its file name is the page's title and
 its address (`Huge Pages.md` is `abucnasty.dev/wiki/huge-pages`), so it
 must be unique in the wiki. Link pages and paste images as usual in
 Obsidian; images go to the folder's `_attachments/`. Put `draft: true` in
-the frontmatter to keep a page off the site, and when renaming a page add
+the frontmatter to keep a page off the public site (signed-in wiki editors
+still see it, marked as a draft), and when renaming a page add
 its old title to `aliases:` so old links keep working. Pages are published
 when the vault syncs to `main`. The details are in
 [Conventions](_tools/docs/conventions.md#wiki).
