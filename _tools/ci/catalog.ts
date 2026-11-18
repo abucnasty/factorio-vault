@@ -1,17 +1,21 @@
-// Validate the catalog and the blog and publish them to R2 for the link Worker.
+// Validate the catalog, the blog and the wiki and publish them to R2 for the link Worker.
 //
 //   node _tools/ci/catalog.ts validate [--repo DIR] [--commit REF]
 //   node _tools/ci/catalog.ts publish  [--repo DIR] [--commit REF] [--out DIR]
 //   node _tools/ci/catalog.ts backfill [--repo DIR] [--commit REF] [--out DIR]
 //
-// validate  checks every blueprint folder and blog post; exits 1 listing the problems.
+// validate  checks every blueprint folder, blog post and wiki page; exits 1 listing the problems.
 // publish   uploads the strings the live index.json lacks, then index.json.
 //           If the live index cannot be read, every string is uploaded.
 //           Then the blog: the post files blog/index.json does not list
 //           yet (or with other content), every post's index.md, then
-//           blog/index.json (see build-blog.ts).
+//           blog/index.json (see build-blog.ts). Then the wiki: the images
+//           wiki/index.json does not list yet (or with other content),
+//           compressed; the pages' markdown that changed; then
+//           wiki/index.json (see build-wiki.ts).
 // backfill  uploads every string of every current version, then index.json;
-//           and every published post's files, then blog/index.json.
+//           every published post's files, then blog/index.json; and every
+//           wiki image and page, then wiki/index.json.
 //
 // The index is built from the commit's files and each blueprint's
 // versions.json, never from the git history, so only current versions'
@@ -45,6 +49,8 @@ import { parseArgs, promisify } from "node:util";
 import type { BlogIndex } from "./blog-index.ts";
 import { BLOG_INDEX_KEY, type BlogObject, blogObjects, buildBlog, carryOverPosts } from "./build-blog.ts";
 import { buildCatalog, carryOver, type LiveIndex, produceStrings, selectStrings, type Problem } from "./build-catalog.ts";
+import { buildWiki, carryOverPages, lfsLoader, WIKI_INDEX_KEY, type WikiObject, wikiIndexObject, wikiObjects } from "./build-wiki.ts";
+import type { WikiIndex } from "./wiki-index.ts";
 
 const BUCKET = "factorio-blueprints-catalog";
 const INDEX_KEY = "index.json";
@@ -72,11 +78,12 @@ async function main(): Promise<number> {
   }
   const repo = values.repo ?? process.cwd();
   const opts = values.commit ? { commit: values.commit } : {};
-  // The blog is published after the blueprints, whatever their outcome; the
-  // run fails if either had problems.
+  // The blog and the wiki are published after the blueprints, whatever
+  // their outcome; the run fails if any had problems.
   const blueprints = await publishBlueprints(mode, repo, opts, values.out);
   const blog = await publishBlog(mode, repo, opts, values.out);
-  return Math.max(blueprints, blog);
+  const wiki = await publishWiki(mode, repo, opts, values.out);
+  return Math.max(blueprints, blog, wiki);
 }
 
 async function publishBlueprints(mode: Mode, repo: string, opts: { commit?: string }, out: string | undefined): Promise<number> {
@@ -268,6 +275,81 @@ async function readLiveBlog(out: string | undefined): Promise<BlogIndex | undefi
     console.warn("warning: the live blog index has another schema; every file is uploaded and nothing is carried over");
   } catch (e) {
     console.warn(`warning: no live blog index readable (${firstLine(e)}); every file is uploaded and nothing is carried over`);
+  }
+  return undefined;
+}
+
+/**
+ * The wiki: validate every page under wiki/ and, publishing, upload the
+ * images published pages use that are new or changed (compressed), the
+ * pages' markdown that changed, then wiki/index.json (see build-wiki.ts).
+ * Pages with problems are listed and left out (one already live keeps its
+ * last entry); the run then exits 1, after the valid ones are live. A
+ * failed upload leaves wiki/index.json as it was.
+ */
+async function publishWiki(mode: Mode, repo: string, opts: { commit?: string }, out: string | undefined): Promise<number> {
+  const started = performance.now();
+  const wiki = buildWiki(repo, opts);
+  for (const w of wiki.warnings) {
+    console.warn(`warning: ${w}`);
+    if (process.env["GITHUB_ACTIONS"]) console.log(`::warning::${w}`);
+  }
+  const drafts = wiki.drafts.length > 0 ? `, ${wiki.drafts.length} draft(s) not published` : "";
+  console.log(`${wiki.index.pages.length} wiki page(s) and ${wiki.sources.size} file(s) in the wiki index${drafts}`);
+  if (mode === "validate") {
+    reportProblems(wiki.problems, mode, "wiki page");
+    return wiki.problems.length > 0 ? 1 : 0;
+  }
+
+  const live = await readLiveWiki(out);
+  // Loaded only to publish: validating needs no sharp.
+  const { toWebp, CONVERT_NAME } = await import("./wiki-images.ts");
+  const objects: WikiObject[] = await wikiObjects(
+    wiki,
+    mode === "publish" ? live : undefined,
+    { loadLfs: lfsLoader(repo, wiki.index.commit), convert: toWebp, convertName: CONVERT_NAME },
+    (line) => console.log(line),
+  );
+  const kept = carryOverPages(wiki, live);
+  if (kept.length > 0) console.log(`kept the last published entry of ${kept.length} invalid page(s): ${kept.join(", ")}`);
+  reportProblems(wiki.problems, mode, "wiki page");
+  const failed = wiki.problems.length > 0 ? 1 : 0;
+  if (failed) console.error(`${wiki.invalid.length} invalid wiki page(s) were not updated; see the problems above.`);
+  objects.push(wikiIndexObject(wiki));
+  const bytes = objects.reduce((n, o) => n + Buffer.byteLength(o.body), 0);
+  console.log(`${objects.length} wiki object(s), ${bytes} bytes`);
+
+  const staging = out ?? mkdtempSync(join(tmpdir(), "wiki-"));
+  try {
+    const write = (o: WikiObject) => {
+      const file = join(staging, o.key);
+      mkdirSync(dirname(file), { recursive: true });
+      writeFileSync(file, o.body);
+      return file;
+    };
+    if (out) {
+      for (const o of objects) write(o);
+      console.log(`wrote the wiki to ${out}`);
+      return failed;
+    }
+    const last = objects.pop()!; // wiki/index.json, once everything it names is there
+    await pool(objects, (o) => put(o.key, write(o), o.contentType));
+    await put(last.key, write(last), last.contentType);
+    console.log(`uploaded ${objects.length + 1} wiki object(s) in ${((performance.now() - started) / 1000).toFixed(1)} s`);
+    return failed;
+  } finally {
+    if (!out) rmSync(staging, { recursive: true, force: true });
+  }
+}
+
+/** The live wiki index, or undefined (with a warning) if there is none or it cannot be read. */
+async function readLiveWiki(out: string | undefined): Promise<WikiIndex | undefined> {
+  try {
+    const parsed = JSON.parse(await readObject(out, WIKI_INDEX_KEY)) as WikiIndex;
+    if (parsed.schema === 1 && Array.isArray(parsed.pages) && Array.isArray(parsed.files)) return parsed;
+    console.warn("warning: the live wiki index has another schema; every file is uploaded and nothing is carried over");
+  } catch (e) {
+    console.warn(`warning: no live wiki index readable (${firstLine(e)}); every file is uploaded and nothing is carried over`);
   }
   return undefined;
 }

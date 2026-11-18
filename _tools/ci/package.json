@@ -1,0 +1,13 @@
+{
+  "name": "factorio-blueprints-ci",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Runtime dependencies of the CI scripts; TypeScript and the core come from ../plugin",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "dependencies": {
+    "sharp": "0.35.5"
+  }
+}

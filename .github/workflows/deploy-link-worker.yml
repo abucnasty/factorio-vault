@@ -11,12 +11,14 @@ on:
       - "_tools/link-worker/**"
       - "_tools/ci/catalog-index.ts"
       - "_tools/ci/blog-index.ts"
+      - "_tools/ci/wiki-index.ts"
       - ".github/workflows/deploy-link-worker.yml"
   pull_request:
     paths:
       - "_tools/link-worker/**"
       - "_tools/ci/catalog-index.ts"
       - "_tools/ci/blog-index.ts"
+      - "_tools/ci/wiki-index.ts"
       - ".github/workflows/deploy-link-worker.yml"
   workflow_dispatch:
 

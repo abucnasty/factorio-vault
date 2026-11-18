@@ -2,8 +2,8 @@
  * Public vault links on vault.abucnasty.dev, served from R2. Read-only:
  * everything it serves is produced in CI by _tools/ci/catalog.ts; the
  * Worker encodes nothing. URLs mirror the vault: blueprints are under
- * /blueprints/, blog posts under /blog/ (other top-level folders are not
- * served).
+ * /blueprints/, blog posts under /blog/, the wiki under /wiki/ (other
+ * top-level folders are not served).
  *
  *   GET /index.json                                 the catalog index
  *   GET /blueprints/<path>.txt                      latest blueprint string
@@ -16,10 +16,14 @@
  *   GET /blog/index.json                            the blog index (published posts)
  *   GET /blog/<slug>/index.md                       a post's markdown, frontmatter removed
  *   GET /blog/<slug>/<file path>                    a file of the post folder (images...)
+ *   GET /wiki/index.json                            the wiki index (published pages, their files)
+ *   GET /wiki/<slug>.md                             a page's markdown, frontmatter and comments removed
+ *   GET /wiki/files/<published path>                an image a page shows, as published
  *
  * Blog objects are served only for posts in the blog index, and files only
  * as it lists them, so a post that is a draft again (or deleted) is
- * offline although its objects stay in R2.
+ * offline although its objects stay in R2. The same goes for wiki pages and
+ * files and the wiki index.
  *
  * <path> is the index's path (relative to blueprints/): the longest
  * blueprint folder that prefixes the request (folders never nest, so there
@@ -33,6 +37,7 @@
  */
 
 import { blogFileType, type BlogIndex, type BlogPost } from "../../ci/blog-index.ts";
+import type { WikiFile, WikiIndex } from "../../ci/wiki-index.ts";
 import type { CatalogEntry, CatalogIndex, CatalogNode } from "../../ci/catalog-index.ts";
 
 export interface Env {
@@ -48,6 +53,11 @@ const BLOG = "blog";
 const BLOG_INDEX_KEY = `${BLOG}/index.json`;
 /** A post's markdown, next to its files. */
 const BLOG_BODY = "index.md";
+/** The vault folder, URL prefix and R2 key prefix of the wiki. */
+const WIKI = "wiki";
+const WIKI_INDEX_KEY = `${WIKI}/index.json`;
+/** Where the wiki's files are served and stored, under WIKI. */
+const WIKI_FILES = "files";
 /** The vault folder, URL prefix and R2 key prefix of blueprints. */
 const BLUEPRINTS = "blueprints";
 /** Where strings were stored before they moved under blueprints/ on 2026-11-14; never rewritten, so still read. */
@@ -77,7 +87,7 @@ const CACHE_BLOG_FILE = "public, max-age=86400";
 const TEXT = "text/plain; charset=utf-8";
 const JSON_TYPE = "application/json; charset=utf-8";
 const MARKDOWN = "text/markdown; charset=utf-8";
-/** Post files are the author's own, but an SVG or HTML one must not run script on this origin. */
+/** Post and wiki files are the authors' own, but an SVG or HTML one must not run script on this origin. */
 const BLOG_FILE_CSP = "default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'; sandbox";
 const IMAGE_TYPES: Record<string, string> = {
   jpg: "image/jpeg",
@@ -95,6 +105,7 @@ const BASE_HEADERS = {
 const USAGE =
   "Links look like /blueprints/<path>.txt, /blueprints/<path>@<version>.txt, /blueprints/<path>/<slot>.txt, /blueprints/<path>/cover.jpg, /blueprints/<path>/renders/<file>; every blueprint is listed in /index.json.";
 const BLOG_USAGE = "Blog links look like /blog/<slug>/index.md and /blog/<slug>/<file>; every published post is listed in /blog/index.json.";
+const WIKI_USAGE = "Wiki links look like /wiki/<slug>.md and /wiki/files/<file>; every published page and file is listed in /wiki/index.json.";
 const SLOT = /^(0|[1-9][0-9]*)$/;
 
 interface LoadedIndex {
@@ -162,6 +173,55 @@ export function createHandler(now: () => number = Date.now) {
     return blogCached.bySlug;
   }
 
+  let wikiCached: { etag: string; checkedAt: number; slugs: Set<string>; files: Map<string, WikiFile> } | undefined;
+
+  /** The wiki index's pages and files, cached like the catalog index; undefined while there is none. */
+  async function loadWiki(bucket: R2Bucket): Promise<{ slugs: Set<string>; files: Map<string, WikiFile> } | undefined> {
+    if (wikiCached && now() - wikiCached.checkedAt < INDEX_TTL_MS) return wikiCached;
+    const obj = await bucket.get(WIKI_INDEX_KEY, wikiCached ? { onlyIf: { etagDoesNotMatch: wikiCached.etag } } : undefined);
+    if (obj === null) return (wikiCached = undefined);
+    if (!("body" in obj)) {
+      wikiCached!.checkedAt = now();
+      return wikiCached;
+    }
+    const index = (await obj.json()) as WikiIndex;
+    wikiCached = {
+      etag: obj.etag,
+      checkedAt: now(),
+      slugs: new Set(index.pages.map((p) => p.slug)),
+      files: new Map(index.files.map((f) => [f.published, f])),
+    };
+    return wikiCached;
+  }
+
+  /** /wiki/...: `path` is what follows "wiki/". */
+  async function wikiRoute(path: string, url: URL, request: Request, env: Env): Promise<Response> {
+    if (path === "index.json") {
+      return (await serveObject(env.CATALOG, WIKI_INDEX_KEY, request, JSON_TYPE, CACHE_SHORT)) ?? unavailable("The wiki is not published yet.");
+    }
+    const wiki = await loadWiki(env.CATALOG);
+    if (!wiki) return unavailable("The wiki is not published yet.");
+    if (path.startsWith(WIKI_FILES + "/")) {
+      const published = path.slice(WIKI_FILES.length + 1);
+      const f = wiki.files.get(published);
+      if (!f) return notFound(`The wiki has no file "${published}". ${WIKI_USAGE}`);
+      const cache = url.searchParams.get("v") === f.v ? CACHE_IMMUTABLE : CACHE_BLOG_FILE;
+      const extra = { "Content-Security-Policy": BLOG_FILE_CSP };
+      return (
+        (f.oid !== undefined
+          ? await serveObject(env.LFS, lfsKey(f.oid), request, f.type, cache, extra)
+          : await serveObject(env.CATALOG, `${WIKI}/${WIKI_FILES}/${f.published}`, request, f.type, cache, extra)) ??
+        unavailable(`The wiki file "${f.published}" is missing from storage.`)
+      );
+    }
+    const page = /^([^/]+)\.md$/.exec(path);
+    if (!page || !wiki.slugs.has(page[1]!)) return notFound(`No wiki page "${page?.[1] ?? path}". ${WIKI_USAGE}`);
+    return (
+      (await serveObject(env.CATALOG, `${WIKI}/${page[1]}.md`, request, MARKDOWN, CACHE_SHORT)) ??
+      unavailable(`The markdown of the wiki page "${page[1]}" is missing from storage.`)
+    );
+  }
+
   /** /blog/...: `path` is what follows "blog/". */
   async function blogRoute(path: string, url: URL, request: Request, env: Env): Promise<Response> {
     if (path === "index.json") {
@@ -224,7 +284,8 @@ export function createHandler(now: () => number = Date.now) {
       return (await serveObject(env.CATALOG, INDEX_KEY, request, JSON_TYPE, CACHE_SHORT)) ?? unavailable();
     }
     if (path.startsWith(BLOG + "/") && path.length > BLOG.length + 1) return blogRoute(path.slice(BLOG.length + 1), url, request, env);
-    if (!path.startsWith(BLUEPRINTS + "/")) return notFound(`Not found. ${USAGE} ${BLOG_USAGE}`);
+    if (path.startsWith(WIKI + "/") && path.length > WIKI.length + 1) return wikiRoute(path.slice(WIKI.length + 1), url, request, env);
+    if (!path.startsWith(BLUEPRINTS + "/")) return notFound(`Not found. ${USAGE} ${BLOG_USAGE} ${WIKI_USAGE}`);
     path = path.slice(BLUEPRINTS.length + 1);
 
     const index = await loadIndex(env.CATALOG);
