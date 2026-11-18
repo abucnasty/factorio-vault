@@ -10,17 +10,20 @@
 # version, but does not fail the run. Run it by hand on main with "backfill"
 # to upload every string of every current version again.
 # The same runs validate and publish the blog (blog/): published posts'
-# files, their markdown, then blog/index.json (see _tools/ci/build-blog.ts).
+# files, their markdown, then blog/index.json (see _tools/ci/build-blog.ts);
+# and the wiki (wiki/): the images published pages use, compressed, the
+# pages' markdown, then wiki/index.json (see _tools/ci/build-wiki.ts).
 name: publish catalog
 
-# Only blueprints/ and blog/ are published (other top-level folders are
-# not), so runs start for them and for the tools that build the catalog.
+# Only blueprints/, blog/ and wiki/ are published (other top-level folders
+# are not), so runs start for them and for the tools that build the catalog.
 # Keep the two lists the same.
 on:
   pull_request:
     paths:
       - "blueprints/**"
       - "blog/**"
+      - "wiki/**"
       - "_tools/ci/**"
       - "_tools/plugin/**"
       - "_tools/link-worker/package*.json"
@@ -30,6 +33,7 @@ on:
     paths:
       - "blueprints/**"
       - "blog/**"
+      - "wiki/**"
       - "_tools/ci/**"
       - "_tools/plugin/**"
       - "_tools/link-worker/package*.json"
@@ -37,7 +41,7 @@ on:
   workflow_dispatch:
     inputs:
       backfill:
-        description: Upload every string of every current version (and every blog file), not just the missing ones
+        description: Upload every string of every current version (and every blog and wiki file), not just the missing ones
         type: boolean
         default: false
 
@@ -55,7 +59,8 @@ concurrency:
 env:
   # Never download render images (or blog files stored with LFS); the tools
   # read their LFS pointers from git. Blog images are in plain git and read
-  # from the git objects.
+  # from the git objects. Wiki images are stored with LFS: publishing fetches
+  # only the new or changed ones, from the public LFS server, to compress them.
   GIT_LFS_SKIP_SMUDGE: "1"
 
 jobs:
@@ -80,6 +85,7 @@ jobs:
           cache: npm
           cache-dependency-path: |
             _tools/plugin/package-lock.json
+            _tools/ci/package-lock.json
             _tools/link-worker/package-lock.json
 
       # Pull requests also type-check and test the tools; tooling reaches
@@ -92,6 +98,10 @@ jobs:
         if: github.event_name != 'pull_request'
         working-directory: _tools/plugin
         run: npm ci --omit=dev
+      # sharp, which compresses wiki images (and the wiki tests use).
+      - name: Install the CI tools' dependencies
+        working-directory: _tools/ci
+        run: npm ci
       - name: Type-check and test the tools
         if: github.event_name == 'pull_request'
         working-directory: _tools/ci

@@ -21,6 +21,9 @@ import {
 import { blogFileType, type BlogFile, type BlogIndex, type BlogPost } from "./blog-index.ts";
 import { Git, LFS_POINTER, type Problem } from "./build-catalog.ts";
 
+/** Obsidian's attachment folder (.obsidian/app.json): published like any other post folder. */
+const ATTACHMENTS = "_attachments";
+
 export const BLOG_INDEX_KEY = `${BLOG_ROOT}/index.json`;
 export const MARKDOWN_TYPE = "text/markdown; charset=utf-8";
 
@@ -58,8 +61,9 @@ export function buildBlog(repo: string, opts: { commit?: string; now?: Date } = 
     const rest = path.slice(prefix.length + (slug?.length ?? 0) + 1);
     // Files directly in blog/, and folders starting with "_" or ".", are not posts.
     if (slug === undefined || !path.startsWith(prefix + slug + "/")) continue;
-    // Nor are files or folders inside a post that start with "_" or ".".
-    if (rest.split("/").some((s) => /^[_.]/.test(s))) continue;
+    // Nor are files or folders inside a post that start with "_" or ".",
+    // except _attachments folders (where Obsidian pastes images).
+    if (rest.split("/").some((s) => /^[_.]/.test(s) && s !== ATTACHMENTS)) continue;
     let files = folders.get(slug);
     if (!files) folders.set(slug, (files = new Map()));
     files.set(rest, blob);

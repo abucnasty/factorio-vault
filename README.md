@@ -48,9 +48,13 @@ blueprints/<category>/.../<slug>/
   renders/<slot path>.jpg   preview images (Git LFS): 0.jpg, or 3/1.jpg in a book
 blog/<slug>/                one folder per post on abucnasty.dev/blog/<slug>
   README.md                 the post, with its metadata in the frontmatter
+wiki/                       the wiki, on abucnasty.dev/wiki
+  Home.md                   the front page
+  <folder>/<Title>.md       a page; folders only organise the vault
+  <folder>/_attachments/    its images (Git LFS), where Obsidian pastes them
 ```
 
-Only `blueprints/` and `blog/` are published.
+Only `blueprints/`, `blog/` and `wiki/` are published.
 
 ## Writing a blog post
 
@@ -61,6 +65,8 @@ Only `blueprints/` and `blog/` are published.
    `tags`, and write the post below the frontmatter.
 3. Put images in the folder (or a subfolder such as `screenshots/`) and link
    them relatively: `![Nauvis hub at 60 FPS](./screenshots/hub-60.jpg)`.
+   An image pasted into the note lands in the post's `_attachments/`
+   folder, which is published too.
 4. Set `status: public` when it is ready (`unlisted` to share it by link
    only). While it is `draft` it is never published.
 5. Right-click the folder (or run it from the command palette in the
@@ -71,6 +77,17 @@ Only `blueprints/` and `blog/` are published.
 
 Setting `status: draft` again (and committing) takes a post offline. The
 details are in [Conventions](_tools/docs/conventions.md#blog-posts).
+
+## Writing a wiki page
+
+Make a note anywhere under `wiki/`. Its file name is the page's title and
+its address (`Huge Pages.md` is `abucnasty.dev/wiki/huge-pages`), so it
+must be unique in the wiki. Link pages and paste images as usual in
+Obsidian; images go to the folder's `_attachments/`. Put `draft: true` in
+the frontmatter to keep a page off the site, and when renaming a page add
+its old title to `aliases:` so old links keep working. Pages are published
+when the vault syncs to `main`. The details are in
+[Conventions](_tools/docs/conventions.md#wiki).
 
 - [Setup](_tools/docs/setup.md): set up a computer to edit and sync the vault.
 - [Conventions](_tools/docs/conventions.md): layout, frontmatter and file formats.

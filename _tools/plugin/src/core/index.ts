@@ -125,3 +125,32 @@ export type { BlueprintStats } from "./stats.ts";
 
 export { BLOG_BODY_FILE, BLOG_ROOT, blogNotePath, blogPostFolderName, isBlogSlug, isIsoDate, readBlogPost } from "./blog.ts";
 export type { BlogPostMeta, BlogPostRead } from "./blog.ts";
+
+export {
+  clipText,
+  EXCERPT_MAX,
+  headingId,
+  HeadingIds,
+  isImageEmbed,
+  isWikiPagePath,
+  isWikiPath,
+  linkTitle,
+  parseWikiLink,
+  plainInline,
+  readWikiPage,
+  resolveWikiFile,
+  scanWikiMarkdown,
+  splitHash,
+  stripWikiComments,
+  titleKey,
+  vaultTarget,
+  WIKI_ATTACHMENTS,
+  WIKI_HOME_TITLE,
+  WIKI_RESERVED_SLUGS,
+  WIKI_ROOT,
+  wikiFolder,
+  wikiRelative,
+  wikiSlug,
+  wikiTitle,
+} from "./wiki.ts";
+export type { WikiHeading, WikiPageRead, WikiScan } from "./wiki.ts";

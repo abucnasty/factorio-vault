@@ -458,3 +458,84 @@ test("blog: a post taken out of the index goes offline once the cached index is 
   tick(10_000);
   assert.equal((await req("/blog/fps/index.md")).status, 404);
 });
+
+// The wiki: wiki/index.json, and a page's markdown and files, only as it lists them.
+
+function wikiSetup() {
+  const t = setup();
+  const page = (slug: string, files: string[] = []) => ({ title: slug, slug, folder: "", aliases: [], headings: [], excerpt: "", links: [], files, blob: "a".repeat(40) });
+  t.catalog.put(
+    "wiki/index.json",
+    JSON.stringify({
+      schema: 1,
+      generatedAt: "2026-01-01T00:00:00Z",
+      commit: SHA2,
+      pages: [page("home"), page("how-to-benchmark", ["Guides/_attachments/logo.png", "Guides/anim.gif"])],
+      files: [
+        { path: "Guides/_attachments/logo.png", published: "Guides/_attachments/logo.webp", type: "image/webp", size: 4, sourceSize: 9, blob: "b".repeat(40), v: "1234abcd1234abcd", convert: "webp-1600-q85" },
+        { path: "Guides/anim.gif", published: "Guides/anim.gif", type: "image/gif", size: 5, sourceSize: 5, blob: "c".repeat(40), v: OID.slice(0, 16), oid: OID },
+      ],
+    }),
+  );
+  t.catalog.put("wiki/home.md", "Welcome.\n");
+  t.catalog.put("wiki/how-to-benchmark.md", "## Steps\n");
+  t.catalog.put("wiki/files/Guides/_attachments/logo.webp", "WEBP");
+  // A page that was published before and is a draft now, and a file no page uses any more: their objects remain.
+  t.catalog.put("wiki/secret.md", "draft");
+  t.catalog.put("wiki/files/old.webp", "old");
+  return t;
+}
+
+test("wiki: the index, a page's markdown and its files, with CORS, caching and the sandbox", async () => {
+  const { req } = wikiSetup();
+  let res = await req("/wiki/index.json");
+  assert.equal(res.status, 200);
+  assert.equal(res.headers.get("content-type"), "application/json; charset=utf-8");
+  assert.equal(res.headers.get("cache-control"), "public, max-age=60");
+  assert.equal(res.headers.get("access-control-allow-origin"), "*");
+
+  res = await req("/wiki/how-to-benchmark.md");
+  assert.equal(res.status, 200);
+  assert.equal(res.headers.get("content-type"), "text/markdown; charset=utf-8");
+  assert.equal(res.headers.get("cache-control"), "public, max-age=60");
+  assert.equal(await res.text(), "## Steps\n");
+
+  res = await req("/wiki/files/Guides/_attachments/logo.webp");
+  assert.equal(res.status, 200);
+  assert.equal(await res.text(), "WEBP");
+  assert.equal(res.headers.get("content-type"), "image/webp");
+  assert.equal(res.headers.get("cache-control"), "public, max-age=86400");
+  assert.equal(res.headers.get("access-control-allow-origin"), "*");
+  assert.match(res.headers.get("content-security-policy")!, /sandbox/);
+  res = await req("/wiki/files/Guides/_attachments/logo.webp?v=1234abcd1234abcd");
+  assert.equal(res.headers.get("cache-control"), "public, max-age=31536000, immutable");
+  assert.equal((await req("/wiki/files/Guides/_attachments/logo.webp", { headers: { "If-None-Match": res.headers.get("etag")! } })).status, 304);
+
+  // A GIF stored with Git LFS comes from the LFS bucket, as it is.
+  res = await req("/wiki/files/Guides/anim.gif");
+  assert.equal(res.status, 200);
+  assert.equal(await res.text(), "JFIF!");
+  assert.equal(res.headers.get("content-type"), "image/gif");
+});
+
+test("wiki: pages and files the index does not list are not served; without an index nothing is", async () => {
+  const { req } = wikiSetup();
+  for (const path of [
+    "/wiki/secret.md",
+    "/wiki/files/old.webp",
+    "/wiki/files/Guides/_attachments/logo.png",
+    "/wiki/home",
+    "/wiki/Home.md",
+    "/wiki/files/%2E%2E/secret.md",
+    "/wiki/index.md",
+  ]) {
+    const res = await req(path);
+    assert.equal(res.status, 404, path);
+    assert.equal(res.headers.get("cache-control"), "no-store");
+  }
+  assert.match(await (await req("/wiki/secret.md")).text(), /No wiki page "secret"/);
+  const bare = setup();
+  assert.equal((await bare.req("/wiki/index.json")).status, 503);
+  assert.equal((await bare.req("/wiki/home.md")).status, 503);
+  assert.equal((await bare.req("/wiki/files/a.webp")).status, 503);
+});

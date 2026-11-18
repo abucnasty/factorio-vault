@@ -36,10 +36,17 @@ blog/                      blog posts (see "Blog posts"), never blueprints
   <slug>/
     README.md                the post: frontmatter + markdown
     screenshots/...          its images and other files, linked relatively
+wiki/                      wiki pages (see "Wiki"), never blueprints
+  Home.md                    the front page
+  <folders>/<Title>.md       a page
+  <folders>/_attachments/    images (Git LFS)
 ```
 
 Only `blueprints/` holds blueprints: other top-level folders are never
-scanned for blueprints, and only `blueprints/` and `blog/` are published. A blueprint's **path**
+scanned for blueprints, and only `blueprints/`, `blog/` and `wiki/` are
+published. Obsidian pastes images into an `_attachments/` folder beside the
+note (`.obsidian/app.json`); in `blueprints/` that folder, like any starting
+with `_`, is ignored. A blueprint's **path**
 (in `index.json`, links and site addresses) is its folder path relative to
 `blueprints/`, e.g. `grids/substation/trains-substation-grid`.
 
@@ -283,6 +290,8 @@ root, and under `blueprints/`, for a blueprint at `<path>` (so the link is
 - `/index.json`: the catalog index (schema: `_tools/ci/catalog-index.ts`).
 - `/blog/index.json`, `/blog/<slug>/index.md` and `/blog/<slug>/<file path>`:
   the blog (see "Blog posts").
+- `/wiki/index.json`, `/wiki/<slug>.md` and `/wiki/files/<published path>`:
+  the wiki (see "Wiki").
 
 The old host `https://blueprints.abucnasty.dev/` served the same without
 `blueprints/` (`/<path>.txt`); from 2026-11-14 it redirects (301) every
@@ -326,7 +335,9 @@ A post is a folder `blog/<slug>/` with `README.md` (frontmatter, then the
 post's markdown) and its images and other files beside it. The folder name
 is the slug, the post's address on the site is `/blog/<slug>`, and it is
 lowercase letters and digits joined by single hyphens. Files and folders
-starting with `_` or `.` are left out, inside a post and in `blog/`.
+starting with `_` or `.` are left out, inside a post and in `blog/`, except
+`_attachments` folders inside a post (where Obsidian pastes images), which
+are published like any other.
 
 ```yaml
 status: public        # as for blueprints: none or draft is not published
@@ -360,14 +371,63 @@ for the posts in `blog/index.json` only, and only the files it lists. An
 invalid published post is reported, fails the run, and keeps its last
 published version.
 
+## Wiki
+
+Every `.md` file under `wiki/` is a page, except inside folders named
+`_attachments` and files or folders starting with `.`. Folders only
+organise the vault: they group pages in the site's list of pages but are
+not part of addresses.
+
+- **Title**: the file name without `.md`. Titles are unique across the
+  wiki, ignoring case.
+- **Address**: `/wiki/<slug>` on abucnasty.dev, the slug being the title
+  lowercased with every run of characters other than letters and digits
+  turned into one `-`, trimmed (`Step 2: UPS & FPS` is `step-2-ups-fps`).
+  Slugs are unique too, and `all` is the site's (its list of pages).
+  `wiki/Home.md` is the front page, at `/wiki`.
+- **Frontmatter**: only two keys mean anything, and it is never shown.
+  `draft: true` keeps the page off the site (links to it show as a missing
+  page). `aliases:` (Obsidian's own list) holds former titles: the address
+  of each redirects to the page, and links by an alias resolve to it. An
+  alias may not be another page's title or address.
+- **Links**: `[[Page]]`, `[[Page|label]]`, `[[Page#Heading]]` and
+  `[label](relative/path/Page.md#Heading)` (as Obsidian writes them here,
+  URL-encoded) resolve by title, wherever the page is, as in Obsidian. A
+  link to a missing or draft page shows as a missing page.
+- **Images**: `![[image.png]]`, `![[image.png|400]]` (width in pixels) and
+  `![alt](relative/path.png)`, resolved by file name: the page's own
+  `_attachments/` first, then its folder, then anywhere in `wiki/`. Images
+  in `wiki/**/_attachments/` are stored with Git LFS (`.gitattributes`); one
+  in plain git works too.
+- **Also**: callouts (`> [!note] Title`, `> [!warning]`, ...; `+`/`-` do not
+  fold), `%% comments %%` (removed before publishing), a paragraph that is
+  only a YouTube link (embedded player), GFM tables, task lists and code.
+  Raw HTML is not rendered, and page embeds (`![[Page]]`) and tags show as
+  plain text.
+
+CI (`_tools/ci/build-wiki.ts`, run by `catalog.ts` with the catalog)
+publishes to `factorio-blueprints-catalog`, on every push to `main`: the
+images published pages show or link to, at `wiki/files/<published path>`
+(PNG, JPEG and WebP as WebP, longest side at most 1600 px, quality 85, see
+`_tools/ci/wiki-images.ts`; GIFs as they are, at most 5 MB, and one stored
+with LFS is served from the LFS bucket), only new or changed ones; each
+page's markdown without frontmatter and comments at `wiki/<slug>.md`; then
+`wiki/index.json` (schema: `_tools/ci/wiki-index.ts`). Files in the vault
+are never rewritten. To compress an LFS image CI fetches it from the LFS
+server, so it must have been pushed with git-lfs. The link Worker serves
+those under `https://vault.abucnasty.dev/wiki/` for the pages and files in
+`wiki/index.json` only. A duplicate title or address, an alias taken by
+another page, unreadable frontmatter or a GIF over 5 MB fails the run; the
+page keeps its last published version, and the other pages are published.
+
 ## Branches and commits
 
 - One branch per unit of work, named for what it does (`vault-skeleton`,
   `in-game-render`). No generated or random names.
 - Tooling changes (anything under `_tools/`, `.github/`, `.obsidian/` or the
   LFS config) reach `main` only through a pull request the owner merges.
-- Blueprint, notes and blog post edits made in the vault are committed and
-  pushed to `main` directly by the vault's sync. `main` therefore has no branch
+- Blueprint, notes, blog post and wiki edits made in the vault are committed
+  and pushed to `main` directly by the vault's sync. `main` therefore has no branch
   protection that blocks direct pushes.
 - Commit messages say what changed and why, in lowercase imperative.
 
