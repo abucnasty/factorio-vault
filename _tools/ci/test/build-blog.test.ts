@@ -51,6 +51,8 @@ test("published posts are indexed newest first with their files; drafts and othe
   r.write("blog/newer-post/screenshots/a.jpg", JPEG);
   r.write("blog/newer-post/big.png", pointer);
   r.write("blog/newer-post/_scratch.md", "private");
+  r.write("blog/newer-post/_attachments/Pasted image.jpg", JPEG); // where Obsidian pastes images: published
+  r.write("blog/newer-post/_attachments/.hidden.jpg", JPEG);
   r.write("blog/same-day-a/README.md", published("Same day", "2026-05-11"));
   r.write("blog/unlisted-post/README.md", published("Hidden", "2026-01-01").replace("status: public", "status: unlisted"));
   r.write("blog/a-draft/README.md", note("status: draft\ntitle: Work in progress"));
@@ -87,6 +89,7 @@ test("published posts are indexed newest first with their files; drafts and othe
       tags: ["ups", "fps"],
       status: "public",
       files: [
+        { path: "_attachments/Pasted image.jpg", size: JPEG.length, blob: 40 },
         { path: "big.png", size: 4242, oid: OID, blob: 40 },
         { path: "screenshots/a.jpg", size: JPEG.length, blob: 40 },
       ],
@@ -99,6 +102,7 @@ test("published posts are indexed newest first with their files; drafts and othe
   assert.deepEqual(
     objects.map((o) => [o.key, o.contentType]),
     [
+      ["blog/newer-post/_attachments/Pasted image.jpg", "image/jpeg"],
       ["blog/newer-post/screenshots/a.jpg", "image/jpeg"],
       ["blog/newer-post/index.md", "text/markdown; charset=utf-8"],
       ["blog/older-post/index.md", "text/markdown; charset=utf-8"],
@@ -107,7 +111,7 @@ test("published posts are indexed newest first with their files; drafts and othe
       ["blog/index.json", "application/json; charset=utf-8"],
     ],
   );
-  assert.deepEqual(objects[0]!.body, JPEG);
+  assert.deepEqual(objects[1]!.body, JPEG);
   assert.deepEqual(JSON.parse(objects.at(-1)!.body as string), blog.index);
 
   // Against a live index that already lists the image with the same content, it is not uploaded again.

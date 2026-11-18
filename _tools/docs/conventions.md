@@ -39,7 +39,10 @@ blog/                      blog posts (see "Blog posts"), never blueprints
 ```
 
 Only `blueprints/` holds blueprints: other top-level folders are never
-scanned for blueprints, and only `blueprints/` and `blog/` are published. A blueprint's **path**
+scanned for blueprints, and only `blueprints/` and `blog/` are published.
+Obsidian pastes images into an `_attachments/` folder beside the note
+(`.obsidian/app.json`); in `blueprints/` that folder, like any starting
+with `_`, is ignored. A blueprint's **path**
 (in `index.json`, links and site addresses) is its folder path relative to
 `blueprints/`, e.g. `grids/substation/trains-substation-grid`.
 
@@ -326,7 +329,9 @@ A post is a folder `blog/<slug>/` with `README.md` (frontmatter, then the
 post's markdown) and its images and other files beside it. The folder name
 is the slug, the post's address on the site is `/blog/<slug>`, and it is
 lowercase letters and digits joined by single hyphens. Files and folders
-starting with `_` or `.` are left out, inside a post and in `blog/`.
+starting with `_` or `.` are left out, inside a post and in `blog/`, except
+`_attachments` folders inside a post (where Obsidian pastes images), which
+are published like any other.
 
 ```yaml
 status: public        # as for blueprints: none or draft is not published

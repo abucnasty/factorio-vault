@@ -61,6 +61,8 @@ Only `blueprints/` and `blog/` are published.
    `tags`, and write the post below the frontmatter.
 3. Put images in the folder (or a subfolder such as `screenshots/`) and link
    them relatively: `![Nauvis hub at 60 FPS](./screenshots/hub-60.jpg)`.
+   An image pasted into the note lands in the post's `_attachments/`
+   folder, which is published too.
 4. Set `status: public` when it is ready (`unlisted` to share it by link
    only). While it is `draft` it is never published.
 5. Right-click the folder (or run it from the command palette in the
