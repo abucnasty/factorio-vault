@@ -21,7 +21,9 @@ You will notice that there is a conflict between the methods: more DI often mean
 
 Direct insertion is limited by how you can arrange buildings around each other. You cannot direct insert everything, so what are the priorities?
 
-1. It's the amount of items transferred that cost UPS, so choose the item with the highest volume in the target machine. 
+1. It's the amount of items transferred that cost UPS, so choose the item with the highest volume in the target machine.
 2. Look for machines where the ratios are somewhat close to each other.
 
 A good example for DI are blue chips. Green chips and the ingredients for green chips come at a high volume. Arranging them around each other with direct insertion eliminates a lot of item transfers without need all that many additional machines. In addition, the volume of the items would make using belts more difficult.![[Blubb-314535e1.webp]]
+
+Another important lategame method of avoiding to belt high volume items is to build directly on the resource patches. Very easy doable for smelting of iron and copper in the foundries. Put a miner down pointing directly into the foundry and you only have to deal with the liquids. More advanced methods put entire science builds on ore patches, especially for grey and purple science.
