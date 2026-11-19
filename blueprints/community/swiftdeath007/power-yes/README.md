@@ -1,5 +1,5 @@
 ---
-title: swiftdeath-power-yes
+title: power-yes
 authors:
   - swiftdeath007
 version: "1.0"
