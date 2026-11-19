@@ -10,6 +10,8 @@ blueprints: 7
 factorio_version: 2.1.24
 ---
 
+![Modular Molten Iron/Copper With an RS Latch](https://vault.abucnasty.dev/blueprints/community/modular-molten-iron-copper-with-an-rs-latch/cover.jpg)
+
 - [Modular Start Piece](https://vault.abucnasty.dev/blueprints/community/modular-molten-iron-copper-with-an-rs-latch/0.txt)
 - [Modular Molten Iron/Copper](https://vault.abucnasty.dev/blueprints/community/modular-molten-iron-copper-with-an-rs-latch/1.txt)
 - [Modular End Piece](https://vault.abucnasty.dev/blueprints/community/modular-molten-iron-copper-with-an-rs-latch/2.txt)
