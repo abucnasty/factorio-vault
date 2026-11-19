@@ -1,0 +1,555 @@
+{
+  "blueprint_book": {
+    "active_index": 2,
+    "blueprints": [
+      {
+        "blueprint": {
+          "description": "The start of any modular Iron/Copper piece. Ensure the pumps have lava and connect to the RS latch! Ensure landfill can dump into the lava!",
+          "entities": [
+            {"entity_number":1,"name":"medium-electric-pole","position":{"x":-42.5,"y":85.5},"quality":"legendary"},
+            {"entity_number":2,"name":"medium-electric-pole","position":{"x":-42.5,"y":101.5},"quality":"legendary"},
+            {"entity_number":3,"items":[{"id":{"name":"speed-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":1,"stack":0},{"inventory":1,"stack":1}]}}],"name":"beacon","position":{"x":-36.5,"y":79.5},"quality":"legendary"},
+            {"control_behavior":{"circuit_condition":{"comparator":"=","constant":1,"first_signal":{"name":"signal-battery-mid-level","type":"virtual"}},"circuit_enabled":true},"direction":12,"entity_number":4,"name":"offshore-pump","position":{"x":-36.5,"y":82.5},"quality":"legendary"},
+            {"control_behavior":{"circuit_condition":{"comparator":"=","constant":1,"first_signal":{"name":"signal-battery-mid-level","type":"virtual"}},"circuit_enabled":true},"direction":12,"entity_number":5,"name":"offshore-pump","position":{"x":-36.5,"y":84.5},"quality":"legendary"},
+            {"control_behavior":{"circuit_condition":{"comparator":"=","constant":1,"first_signal":{"name":"signal-battery-mid-level","type":"virtual"}},"circuit_enabled":true},"direction":12,"entity_number":6,"name":"offshore-pump","position":{"x":-36.5,"y":86.5},"quality":"legendary"},
+            {"entity_number":7,"items":[{"id":{"name":"speed-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":1,"stack":0},{"inventory":1,"stack":1}]}}],"name":"beacon","position":{"x":-36.5,"y":90.5},"quality":"legendary"},
+            {"control_behavior":{"circuit_condition":{"comparator":"=","constant":1,"first_signal":{"name":"signal-battery-mid-level","type":"virtual"}},"circuit_enabled":true},"direction":12,"entity_number":8,"name":"offshore-pump","position":{"x":-36.5,"y":93.5},"quality":"legendary"},
+            {"control_behavior":{"circuit_condition":{"comparator":"=","constant":1,"first_signal":{"name":"signal-battery-mid-level","type":"virtual"}},"circuit_enabled":true},"direction":12,"entity_number":9,"name":"offshore-pump","position":{"x":-36.5,"y":95.5},"quality":"legendary"},
+            {"control_behavior":{"circuit_condition":{"comparator":"=","constant":1,"first_signal":{"name":"signal-battery-mid-level","type":"virtual"}},"circuit_enabled":true},"direction":12,"entity_number":10,"name":"offshore-pump","position":{"x":-36.5,"y":97.5},"quality":"legendary"},
+            {"entity_number":11,"items":[{"id":{"name":"speed-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":1,"stack":0},{"inventory":1,"stack":1}]}}],"name":"beacon","position":{"x":-36.5,"y":101.5},"quality":"legendary"},
+            {"direction":8,"entity_number":12,"name":"pipe-to-ground","position":{"x":-35.5,"y":81.5}},
+            {"entity_number":13,"name":"pipe","position":{"x":-35.5,"y":82.5}},
+            {"entity_number":14,"name":"pipe","position":{"x":-35.5,"y":83.5}},
+            {"entity_number":15,"name":"pipe","position":{"x":-35.5,"y":84.5}},
+            {"entity_number":16,"name":"pipe","position":{"x":-35.5,"y":85.5}},
+            {"entity_number":17,"name":"pipe","position":{"x":-35.5,"y":86.5}},
+            {"entity_number":18,"name":"pipe-to-ground","position":{"x":-35.5,"y":87.5}},
+            {"direction":8,"entity_number":19,"name":"pipe-to-ground","position":{"x":-35.5,"y":92.5}},
+            {"entity_number":20,"name":"pipe","position":{"x":-35.5,"y":93.5}},
+            {"entity_number":21,"name":"pipe","position":{"x":-35.5,"y":94.5}},
+            {"entity_number":22,"name":"pipe","position":{"x":-35.5,"y":95.5}},
+            {"entity_number":23,"name":"pipe","position":{"x":-35.5,"y":96.5}},
+            {"entity_number":24,"name":"pipe","position":{"x":-35.5,"y":97.5}},
+            {"entity_number":25,"name":"pipe-to-ground","position":{"x":-35.5,"y":98.5}},
+            {"control_behavior":{"circuit_contents_read_mode":1,"circuit_read_hand_contents":true},"direction":8,"entity_number":26,"name":"turbo-transport-belt","position":{"x":-34.5,"y":79.5}},
+            {"direction":8,"entity_number":27,"name":"turbo-underground-belt","position":{"x":-34.5,"y":80.5},"type":"input"},
+            {"direction":12,"entity_number":28,"name":"pipe-to-ground","position":{"x":-34.5,"y":82.5}},
+            {"entity_number":29,"name":"pipe","position":{"x":-34.5,"y":84.5}},
+            {"direction":8,"entity_number":30,"name":"turbo-underground-belt","position":{"x":-34.5,"y":85.5},"type":"output"},
+            {"direction":8,"entity_number":31,"name":"turbo-transport-belt","position":{"x":-34.5,"y":86.5}},
+            {"direction":8,"entity_number":32,"name":"turbo-underground-belt","position":{"x":-34.5,"y":87.5},"type":"input"},
+            {"always_show":true,"entity_number":33,"icon":{"name":"lava","type":"fluid"},"name":"display-panel","position":{"x":-34.5,"y":93.5}},
+            {"entity_number":34,"name":"pipe","position":{"x":-34.5,"y":94.5}},
+            {"direction":8,"entity_number":35,"name":"turbo-underground-belt","position":{"x":-34.5,"y":95.5},"type":"output"},
+            {"direction":8,"entity_number":36,"name":"turbo-transport-belt","position":{"x":-34.5,"y":96.5}},
+            {"direction":8,"entity_number":37,"name":"turbo-underground-belt","position":{"x":-34.5,"y":97.5},"type":"input"},
+            {"always_show":true,"entity_number":38,"icon":{"name":"calcite"},"name":"display-panel","position":{"x":-34.5,"y":98.5}},
+            {"entity_number":39,"name":"pipe","position":{"x":-33.5,"y":84.5}},
+            {"control_behavior":{"circuit_condition":{"comparator":"=","constant":1,"first_signal":{"name":"calcite"}},"circuit_enabled":true},"direction":12,"entity_number":40,"name":"stack-inserter","position":{"x":-33.5,"y":86.5},"quality":"legendary"},
+            {"entity_number":41,"name":"pipe","position":{"x":-33.5,"y":94.5}},
+            {"control_behavior":{"circuit_condition":{"comparator":"=","constant":1,"first_signal":{"name":"calcite"}},"circuit_enabled":true},"direction":12,"entity_number":42,"name":"stack-inserter","position":{"x":-33.5,"y":96.5},"quality":"legendary"},
+            {"entity_number":43,"name":"medium-electric-pole","position":{"x":-32.5,"y":90.5},"quality":"legendary"},
+            {"control_behavior":{"decider_conditions":{"conditions":[{"comparator":"≥","constant":16,"first_signal":{"name":"landfill"}}],"else_outputs":[],"outputs":[{"copy_count_from_input":false,"signal":{"name":"landfill"}}]}},"direction":8,"entity_number":44,"name":"decider-combinator","position":{"x":-32.5,"y":92}},
+            {"entity_number":45,"name":"stack-inserter","override_stack_size":15,"position":{"x":-31.5,"y":88.5},"quality":"legendary"},
+            {"direction":8,"entity_number":46,"name":"stack-inserter","override_stack_size":15,"position":{"x":-31.5,"y":92.5},"quality":"legendary"},
+            {"entity_number":47,"items":[{"id":{"name":"speed-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":1,"stack":0},{"inventory":1,"stack":1}]}}],"name":"beacon","position":{"x":-30.5,"y":79.5},"quality":"legendary"},
+            {"entity_number":48,"name":"medium-electric-pole","position":{"x":-30.5,"y":82.5},"quality":"legendary"},
+            {"control_behavior":{"circuit_condition":{"comparator":"≠","constant":1,"first_signal":{"name":"signal-battery-mid-level","type":"virtual"}},"circuit_enabled":true,"output_networks":{"green":true,"red":false},"read_contents":true},"direction":4,"entity_number":49,"items":[{"id":{"name":"productivity-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":4,"stack":0},{"inventory":4,"stack":1},{"inventory":4,"stack":2},{"inventory":4,"stack":3}]}}],"name":"foundry","position":{"x":-30.5,"y":85.5},"quality":"legendary","recipe":"molten-copper-from-lava","recipe_quality":"normal"},
+            {"entity_number":50,"name":"stack-inserter","override_stack_size":15,"position":{"x":-30.5,"y":88.5},"quality":"legendary"},
+            {"control_behavior":{"read_contents":true},"entity_number":51,"items":[{"id":{"name":"speed-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":4,"stack":0},{"inventory":4,"stack":1},{"inventory":4,"stack":2},{"inventory":4,"stack":3}]}}],"name":"assembling-machine-3","position":{"x":-30.5,"y":90.5},"quality":"legendary","recipe":"landfill","recipe_quality":"normal"},
+            {"direction":8,"entity_number":52,"name":"stack-inserter","override_stack_size":15,"position":{"x":-30.5,"y":92.5},"quality":"legendary"},
+            {"control_behavior":{"circuit_condition":{"comparator":"≠","constant":1,"first_signal":{"name":"signal-battery-mid-level","type":"virtual"}},"circuit_enabled":true,"output_networks":{"green":true,"red":false},"read_contents":true},"direction":4,"entity_number":53,"items":[{"id":{"name":"productivity-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":4,"stack":0},{"inventory":4,"stack":1},{"inventory":4,"stack":2},{"inventory":4,"stack":3}]}}],"name":"foundry","position":{"x":-30.5,"y":95.5},"quality":"legendary","recipe":"molten-copper-from-lava","recipe_quality":"normal"},
+            {"entity_number":54,"name":"medium-electric-pole","position":{"x":-30.5,"y":98.5},"quality":"legendary"},
+            {"entity_number":55,"items":[{"id":{"name":"speed-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":1,"stack":0},{"inventory":1,"stack":1}]}}],"name":"beacon","position":{"x":-30.5,"y":101.5},"quality":"legendary"},
+            {"entity_number":56,"name":"stack-inserter","override_stack_size":15,"position":{"x":-29.5,"y":88.5},"quality":"legendary"},
+            {"direction":8,"entity_number":57,"name":"stack-inserter","override_stack_size":15,"position":{"x":-29.5,"y":92.5},"quality":"legendary"},
+            {"entity_number":58,"name":"pipe","position":{"x":-28.5,"y":88.5}},
+            {"entity_number":59,"name":"pipe-to-ground","position":{"x":-28.5,"y":89.5}},
+            {"control_behavior":{"circuit_condition":{"comparator":"=","constant":1,"first_signal":{"name":"landfill"}},"circuit_enabled":true},"direction":12,"entity_number":60,"name":"stack-inserter","position":{"x":-28.5,"y":90.5},"quality":"legendary"},
+            {"direction":8,"entity_number":61,"name":"pipe-to-ground","position":{"x":-28.5,"y":91.5}},
+            {"entity_number":62,"name":"pipe","position":{"x":-28.5,"y":92.5}},
+            {"direction":8,"entity_number":63,"name":"pipe-to-ground","position":{"x":-27.5,"y":83.5}},
+            {"entity_number":64,"name":"pipe","position":{"x":-27.5,"y":84.5}},
+            {"entity_number":65,"name":"pipe","position":{"x":-27.5,"y":85.5}},
+            {"entity_number":66,"name":"pipe","position":{"x":-27.5,"y":86.5}},
+            {"entity_number":67,"name":"pipe","position":{"x":-27.5,"y":87.5}},
+            {"entity_number":68,"name":"pipe","position":{"x":-27.5,"y":88.5}},
+            {"always_show":true,"entity_number":69,"icon":{"name":"lava","type":"fluid"},"name":"display-panel","position":{"x":-27.5,"y":90.5}},
+            {"entity_number":70,"name":"pipe","position":{"x":-27.5,"y":92.5}},
+            {"entity_number":71,"name":"pipe","position":{"x":-27.5,"y":93.5}},
+            {"entity_number":72,"name":"pipe","position":{"x":-27.5,"y":94.5}},
+            {"entity_number":73,"name":"pipe","position":{"x":-27.5,"y":95.5}},
+            {"entity_number":74,"name":"pipe","position":{"x":-27.5,"y":96.5}},
+            {"entity_number":75,"name":"pipe-to-ground","position":{"x":-27.5,"y":97.5}},
+            {"direction":12,"entity_number":76,"name":"pipe-to-ground","position":{"x":-26.5,"y":85.5}},
+            {"direction":12,"entity_number":77,"name":"pipe-to-ground","position":{"x":-26.5,"y":95.5}},
+            {"direction":4,"entity_number":78,"name":"pipe-to-ground","position":{"x":-25.5,"y":82.5}},
+            {"entity_number":79,"items":[{"id":{"name":"speed-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":1,"stack":0},{"inventory":1,"stack":1}]}}],"name":"beacon","position":{"x":-24.5,"y":79.5},"quality":"legendary"},
+            {"entity_number":80,"name":"pipe","position":{"x":-24.5,"y":82.5}},
+            {"entity_number":81,"items":[{"id":{"name":"speed-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":1,"stack":0},{"inventory":1,"stack":1}]}}],"name":"beacon","position":{"x":-24.5,"y":90.5},"quality":"legendary"},
+            {"entity_number":82,"name":"medium-electric-pole","position":{"x":-24.5,"y":92.5},"quality":"legendary"},
+            {"entity_number":83,"items":[{"id":{"name":"speed-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":1,"stack":0},{"inventory":1,"stack":1}]}}],"name":"beacon","position":{"x":-24.5,"y":101.5},"quality":"legendary"},
+            {"direction":12,"entity_number":84,"name":"pipe-to-ground","position":{"x":-23.5,"y":82.5}}
+          ],
+          "icons": [
+            {
+              "index": 1,
+              "signal": {
+                "name": "foundry",
+                "quality": "legendary"
+              }
+            },
+            {
+              "index": 2,
+              "signal": {
+                "name": "beacon",
+                "quality": "legendary"
+              }
+            },
+            {
+              "index": 3,
+              "signal": {
+                "name": "molten-copper",
+                "type": "fluid"
+              }
+            },
+            {
+              "index": 4,
+              "signal": {
+                "name": "molten-iron",
+                "type": "fluid"
+              }
+            }
+          ],
+          "item": "blueprint",
+          "label": "Modular Start Piece",
+          "version": 562954249961473,
+          "wires": [
+            [1,2,2,2],
+            [1,2,26,2],
+            [1,5,48,5],
+            [1,5,43,5],
+            [1,5,54,5],
+            [2,5,54,5],
+            [4,1,5,1],
+            [5,1,6,1],
+            [6,1,8,1],
+            [8,1,9,1],
+            [9,1,10,1],
+            [40,2,43,2],
+            [42,2,43,2],
+            [42,2,54,2],
+            [43,5,48,5],
+            [43,5,54,5],
+            [44,2,51,2],
+            [44,4,60,2],
+            [48,5,82,5],
+            [49,1,53,1],
+            [54,5,82,5],
+            [60,2,82,2]
+          ]
+        },
+        "index": 0
+      },
+      {
+        "blueprint": {
+          "description": "A modular piece to add on as many as you need for molten Iron/Copper. Ensure the pumps have lava and connect to the RS latch! Ensure landfill can dump into the lava!",
+          "entities": [
+            {"entity_number":1,"name":"medium-electric-pole","position":{"x":-43.5,"y":85.5},"quality":"legendary"},
+            {"entity_number":2,"name":"medium-electric-pole","position":{"x":-43.5,"y":101.5},"quality":"legendary"},
+            {"entity_number":3,"items":[{"id":{"name":"speed-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":1,"stack":0},{"inventory":1,"stack":1}]}}],"name":"beacon","position":{"x":-37.5,"y":79.5},"quality":"legendary"},
+            {"control_behavior":{"circuit_condition":{"comparator":"=","constant":1,"first_signal":{"name":"signal-battery-mid-level","type":"virtual"}},"circuit_enabled":true},"direction":12,"entity_number":4,"name":"offshore-pump","position":{"x":-37.5,"y":82.5},"quality":"legendary"},
+            {"control_behavior":{"circuit_condition":{"comparator":"=","constant":1,"first_signal":{"name":"signal-battery-mid-level","type":"virtual"}},"circuit_enabled":true},"direction":12,"entity_number":5,"name":"offshore-pump","position":{"x":-37.5,"y":84.5},"quality":"legendary"},
+            {"control_behavior":{"circuit_condition":{"comparator":"=","constant":1,"first_signal":{"name":"signal-battery-mid-level","type":"virtual"}},"circuit_enabled":true},"direction":12,"entity_number":6,"name":"offshore-pump","position":{"x":-37.5,"y":86.5},"quality":"legendary"},
+            {"entity_number":7,"items":[{"id":{"name":"speed-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":1,"stack":0},{"inventory":1,"stack":1}]}}],"name":"beacon","position":{"x":-37.5,"y":90.5},"quality":"legendary"},
+            {"control_behavior":{"circuit_condition":{"comparator":"=","constant":1,"first_signal":{"name":"signal-battery-mid-level","type":"virtual"}},"circuit_enabled":true},"direction":12,"entity_number":8,"name":"offshore-pump","position":{"x":-37.5,"y":93.5},"quality":"legendary"},
+            {"control_behavior":{"circuit_condition":{"comparator":"=","constant":1,"first_signal":{"name":"signal-battery-mid-level","type":"virtual"}},"circuit_enabled":true},"direction":12,"entity_number":9,"name":"offshore-pump","position":{"x":-37.5,"y":95.5},"quality":"legendary"},
+            {"control_behavior":{"circuit_condition":{"comparator":"=","constant":1,"first_signal":{"name":"signal-battery-mid-level","type":"virtual"}},"circuit_enabled":true},"direction":12,"entity_number":10,"name":"offshore-pump","position":{"x":-37.5,"y":97.5},"quality":"legendary"},
+            {"entity_number":11,"items":[{"id":{"name":"speed-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":1,"stack":0},{"inventory":1,"stack":1}]}}],"name":"beacon","position":{"x":-37.5,"y":101.5},"quality":"legendary"},
+            {"direction":8,"entity_number":12,"name":"pipe-to-ground","position":{"x":-36.5,"y":81.5}},
+            {"entity_number":13,"name":"pipe","position":{"x":-36.5,"y":82.5}},
+            {"entity_number":14,"name":"pipe","position":{"x":-36.5,"y":83.5}},
+            {"entity_number":15,"name":"pipe","position":{"x":-36.5,"y":84.5}},
+            {"entity_number":16,"name":"pipe","position":{"x":-36.5,"y":85.5}},
+            {"entity_number":17,"name":"pipe","position":{"x":-36.5,"y":86.5}},
+            {"entity_number":18,"name":"pipe-to-ground","position":{"x":-36.5,"y":87.5}},
+            {"direction":8,"entity_number":19,"name":"pipe-to-ground","position":{"x":-36.5,"y":92.5}},
+            {"entity_number":20,"name":"pipe","position":{"x":-36.5,"y":93.5}},
+            {"entity_number":21,"name":"pipe","position":{"x":-36.5,"y":94.5}},
+            {"entity_number":22,"name":"pipe","position":{"x":-36.5,"y":95.5}},
+            {"entity_number":23,"name":"pipe","position":{"x":-36.5,"y":96.5}},
+            {"entity_number":24,"name":"pipe","position":{"x":-36.5,"y":97.5}},
+            {"entity_number":25,"name":"pipe-to-ground","position":{"x":-36.5,"y":98.5}},
+            {"entity_number":26,"name":"pipe","position":{"x":-35.5,"y":84.5}},
+            {"direction":8,"entity_number":27,"name":"turbo-underground-belt","position":{"x":-35.5,"y":85.5},"type":"output"},
+            {"direction":8,"entity_number":28,"name":"turbo-transport-belt","position":{"x":-35.5,"y":86.5}},
+            {"direction":8,"entity_number":29,"name":"turbo-underground-belt","position":{"x":-35.5,"y":87.5},"type":"input"},
+            {"entity_number":30,"name":"pipe","position":{"x":-35.5,"y":94.5}},
+            {"direction":8,"entity_number":31,"name":"turbo-underground-belt","position":{"x":-35.5,"y":95.5},"type":"output"},
+            {"direction":8,"entity_number":32,"name":"turbo-transport-belt","position":{"x":-35.5,"y":96.5}},
+            {"direction":8,"entity_number":33,"name":"turbo-underground-belt","position":{"x":-35.5,"y":97.5},"type":"input"},
+            {"entity_number":34,"name":"pipe","position":{"x":-34.5,"y":84.5}},
+            {"control_behavior":{"circuit_condition":{"comparator":"=","constant":1,"first_signal":{"name":"calcite"}},"circuit_enabled":true},"direction":12,"entity_number":35,"name":"stack-inserter","position":{"x":-34.5,"y":86.5},"quality":"legendary"},
+            {"entity_number":36,"name":"pipe","position":{"x":-34.5,"y":94.5}},
+            {"control_behavior":{"circuit_condition":{"comparator":"=","constant":1,"first_signal":{"name":"calcite"}},"circuit_enabled":true},"direction":12,"entity_number":37,"name":"stack-inserter","position":{"x":-34.5,"y":96.5},"quality":"legendary"},
+            {"entity_number":38,"name":"medium-electric-pole","position":{"x":-33.5,"y":90.5},"quality":"legendary"},
+            {"control_behavior":{"decider_conditions":{"conditions":[{"comparator":"≥","constant":16,"first_signal":{"name":"landfill"}}],"else_outputs":[],"outputs":[{"copy_count_from_input":false,"signal":{"name":"landfill"}}]}},"direction":8,"entity_number":39,"name":"decider-combinator","position":{"x":-33.5,"y":92}},
+            {"entity_number":40,"name":"stack-inserter","override_stack_size":15,"position":{"x":-32.5,"y":88.5},"quality":"legendary"},
+            {"direction":8,"entity_number":41,"name":"stack-inserter","override_stack_size":15,"position":{"x":-32.5,"y":92.5},"quality":"legendary"},
+            {"entity_number":42,"items":[{"id":{"name":"speed-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":1,"stack":0},{"inventory":1,"stack":1}]}}],"name":"beacon","position":{"x":-31.5,"y":79.5},"quality":"legendary"},
+            {"entity_number":43,"name":"medium-electric-pole","position":{"x":-31.5,"y":82.5},"quality":"legendary"},
+            {"control_behavior":{"circuit_condition":{"comparator":"≠","constant":1,"first_signal":{"name":"signal-battery-mid-level","type":"virtual"}},"circuit_enabled":true,"output_networks":{"green":true,"red":false},"read_contents":true},"direction":4,"entity_number":44,"items":[{"id":{"name":"productivity-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":4,"stack":0},{"inventory":4,"stack":1},{"inventory":4,"stack":2},{"inventory":4,"stack":3}]}}],"name":"foundry","position":{"x":-31.5,"y":85.5},"quality":"legendary","recipe":"molten-copper-from-lava","recipe_quality":"normal"},
+            {"entity_number":45,"name":"stack-inserter","override_stack_size":15,"position":{"x":-31.5,"y":88.5},"quality":"legendary"},
+            {"control_behavior":{"read_contents":true},"entity_number":46,"items":[{"id":{"name":"speed-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":4,"stack":0},{"inventory":4,"stack":1},{"inventory":4,"stack":2},{"inventory":4,"stack":3}]}}],"name":"assembling-machine-3","position":{"x":-31.5,"y":90.5},"quality":"legendary","recipe":"landfill","recipe_quality":"normal"},
+            {"direction":8,"entity_number":47,"name":"stack-inserter","override_stack_size":15,"position":{"x":-31.5,"y":92.5},"quality":"legendary"},
+            {"control_behavior":{"circuit_condition":{"comparator":"≠","constant":1,"first_signal":{"name":"signal-battery-mid-level","type":"virtual"}},"circuit_enabled":true,"output_networks":{"green":true,"red":false},"read_contents":true},"direction":4,"entity_number":48,"items":[{"id":{"name":"productivity-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":4,"stack":0},{"inventory":4,"stack":1},{"inventory":4,"stack":2},{"inventory":4,"stack":3}]}}],"name":"foundry","position":{"x":-31.5,"y":95.5},"quality":"legendary","recipe":"molten-copper-from-lava","recipe_quality":"normal"},
+            {"entity_number":49,"name":"medium-electric-pole","position":{"x":-31.5,"y":98.5},"quality":"legendary"},
+            {"entity_number":50,"items":[{"id":{"name":"speed-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":1,"stack":0},{"inventory":1,"stack":1}]}}],"name":"beacon","position":{"x":-31.5,"y":101.5},"quality":"legendary"},
+            {"entity_number":51,"name":"stack-inserter","override_stack_size":15,"position":{"x":-30.5,"y":88.5},"quality":"legendary"},
+            {"direction":8,"entity_number":52,"name":"stack-inserter","override_stack_size":15,"position":{"x":-30.5,"y":92.5},"quality":"legendary"},
+            {"entity_number":53,"name":"pipe","position":{"x":-29.5,"y":88.5}},
+            {"entity_number":54,"name":"pipe-to-ground","position":{"x":-29.5,"y":89.5}},
+            {"control_behavior":{"circuit_condition":{"comparator":"=","constant":1,"first_signal":{"name":"landfill"}},"circuit_enabled":true},"direction":12,"entity_number":55,"name":"stack-inserter","position":{"x":-29.5,"y":90.5},"quality":"legendary"},
+            {"direction":8,"entity_number":56,"name":"pipe-to-ground","position":{"x":-29.5,"y":91.5}},
+            {"entity_number":57,"name":"pipe","position":{"x":-29.5,"y":92.5}},
+            {"direction":8,"entity_number":58,"name":"pipe-to-ground","position":{"x":-28.5,"y":83.5}},
+            {"entity_number":59,"name":"pipe","position":{"x":-28.5,"y":84.5}},
+            {"entity_number":60,"name":"pipe","position":{"x":-28.5,"y":85.5}},
+            {"entity_number":61,"name":"pipe","position":{"x":-28.5,"y":86.5}},
+            {"entity_number":62,"name":"pipe","position":{"x":-28.5,"y":87.5}},
+            {"entity_number":63,"name":"pipe","position":{"x":-28.5,"y":88.5}},
+            {"always_show":true,"entity_number":64,"icon":{"name":"lava","type":"fluid"},"name":"display-panel","position":{"x":-28.5,"y":90.5}},
+            {"entity_number":65,"name":"pipe","position":{"x":-28.5,"y":92.5}},
+            {"entity_number":66,"name":"pipe","position":{"x":-28.5,"y":93.5}},
+            {"entity_number":67,"name":"pipe","position":{"x":-28.5,"y":94.5}},
+            {"entity_number":68,"name":"pipe","position":{"x":-28.5,"y":95.5}},
+            {"entity_number":69,"name":"pipe","position":{"x":-28.5,"y":96.5}},
+            {"entity_number":70,"name":"pipe-to-ground","position":{"x":-28.5,"y":97.5}},
+            {"entity_number":71,"items":[{"id":{"name":"speed-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":1,"stack":0},{"inventory":1,"stack":1}]}}],"name":"beacon","position":{"x":-25.5,"y":79.5},"quality":"legendary"},
+            {"entity_number":72,"name":"medium-electric-pole","position":{"x":-25.5,"y":88.5},"quality":"legendary"},
+            {"entity_number":73,"items":[{"id":{"name":"speed-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":1,"stack":0},{"inventory":1,"stack":1}]}}],"name":"beacon","position":{"x":-25.5,"y":90.5},"quality":"legendary"},
+            {"entity_number":74,"name":"medium-electric-pole","position":{"x":-25.5,"y":92.5},"quality":"legendary"},
+            {"entity_number":75,"items":[{"id":{"name":"speed-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":1,"stack":0},{"inventory":1,"stack":1}]}}],"name":"beacon","position":{"x":-25.5,"y":101.5},"quality":"legendary"}
+          ],
+          "icons": [
+            {
+              "index": 1,
+              "signal": {
+                "name": "foundry",
+                "quality": "legendary"
+              }
+            },
+            {
+              "index": 2,
+              "signal": {
+                "name": "beacon",
+                "quality": "legendary"
+              }
+            },
+            {
+              "index": 3,
+              "signal": {
+                "name": "molten-copper",
+                "type": "fluid"
+              }
+            },
+            {
+              "index": 4,
+              "signal": {
+                "name": "molten-iron",
+                "type": "fluid"
+              }
+            }
+          ],
+          "item": "blueprint",
+          "label": "Modular Molten Iron/Copper",
+          "version": 562954249961473,
+          "wires": [
+            [1,2,2,2],
+            [1,5,2,5],
+            [1,5,43,5],
+            [2,5,49,5],
+            [4,1,5,1],
+            [5,1,6,1],
+            [6,1,8,1],
+            [8,1,9,1],
+            [9,1,10,1],
+            [35,2,38,2],
+            [35,2,43,2],
+            [37,2,38,2],
+            [37,2,49,2],
+            [38,5,43,5],
+            [38,5,49,5],
+            [39,2,46,2],
+            [39,4,55,2],
+            [43,5,72,5],
+            [44,1,48,1],
+            [49,5,74,5],
+            [55,2,72,2],
+            [55,2,74,2],
+            [72,2,74,2],
+            [72,5,74,5]
+          ]
+        },
+        "index": 1
+      },
+      {
+        "blueprint": {
+          "description": "The end piece to any modular molten Iron/Copper. Ensure the included RS latch connects to the pumps and foundries!",
+          "entities": [
+            {"entity_number":1,"name":"medium-electric-pole","position":{"x":-41.5,"y":86.5},"quality":"legendary"},
+            {"entity_number":2,"name":"medium-electric-pole","position":{"x":-41.5,"y":102.5},"quality":"legendary"},
+            {"entity_number":3,"items":[{"id":{"name":"speed-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":1,"stack":0},{"inventory":1,"stack":1}]}}],"name":"beacon","position":{"x":-35.5,"y":80.5},"quality":"legendary"},
+            {"control_behavior":{"circuit_condition":{"comparator":"=","constant":1,"first_signal":{"name":"signal-battery-mid-level","type":"virtual"}},"circuit_enabled":true},"direction":12,"entity_number":4,"name":"offshore-pump","position":{"x":-35.5,"y":83.5},"quality":"legendary"},
+            {"control_behavior":{"circuit_condition":{"comparator":"=","constant":1,"first_signal":{"name":"signal-battery-mid-level","type":"virtual"}},"circuit_enabled":true},"direction":12,"entity_number":5,"name":"offshore-pump","position":{"x":-35.5,"y":85.5},"quality":"legendary"},
+            {"control_behavior":{"circuit_condition":{"comparator":"=","constant":1,"first_signal":{"name":"signal-battery-mid-level","type":"virtual"}},"circuit_enabled":true},"direction":12,"entity_number":6,"name":"offshore-pump","position":{"x":-35.5,"y":87.5},"quality":"legendary"},
+            {"entity_number":7,"items":[{"id":{"name":"speed-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":1,"stack":0},{"inventory":1,"stack":1}]}}],"name":"beacon","position":{"x":-35.5,"y":91.5},"quality":"legendary"},
+            {"control_behavior":{"circuit_condition":{"comparator":"=","constant":1,"first_signal":{"name":"signal-battery-mid-level","type":"virtual"}},"circuit_enabled":true},"direction":12,"entity_number":8,"name":"offshore-pump","position":{"x":-35.5,"y":94.5},"quality":"legendary"},
+            {"control_behavior":{"circuit_condition":{"comparator":"=","constant":1,"first_signal":{"name":"signal-battery-mid-level","type":"virtual"}},"circuit_enabled":true},"direction":12,"entity_number":9,"name":"offshore-pump","position":{"x":-35.5,"y":96.5},"quality":"legendary"},
+            {"control_behavior":{"circuit_condition":{"comparator":"=","constant":1,"first_signal":{"name":"signal-battery-mid-level","type":"virtual"}},"circuit_enabled":true},"direction":12,"entity_number":10,"name":"offshore-pump","position":{"x":-35.5,"y":98.5},"quality":"legendary"},
+            {"entity_number":11,"items":[{"id":{"name":"speed-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":1,"stack":0},{"inventory":1,"stack":1}]}}],"name":"beacon","position":{"x":-35.5,"y":102.5},"quality":"legendary"},
+            {"direction":8,"entity_number":12,"name":"pipe-to-ground","position":{"x":-34.5,"y":82.5}},
+            {"entity_number":13,"name":"pipe","position":{"x":-34.5,"y":83.5}},
+            {"entity_number":14,"name":"pipe","position":{"x":-34.5,"y":84.5}},
+            {"entity_number":15,"name":"pipe","position":{"x":-34.5,"y":85.5}},
+            {"entity_number":16,"name":"pipe","position":{"x":-34.5,"y":86.5}},
+            {"entity_number":17,"name":"pipe","position":{"x":-34.5,"y":87.5}},
+            {"entity_number":18,"name":"pipe-to-ground","position":{"x":-34.5,"y":88.5}},
+            {"direction":8,"entity_number":19,"name":"pipe-to-ground","position":{"x":-34.5,"y":93.5}},
+            {"entity_number":20,"name":"pipe","position":{"x":-34.5,"y":94.5}},
+            {"entity_number":21,"name":"pipe","position":{"x":-34.5,"y":95.5}},
+            {"entity_number":22,"name":"pipe","position":{"x":-34.5,"y":96.5}},
+            {"entity_number":23,"name":"pipe","position":{"x":-34.5,"y":97.5}},
+            {"entity_number":24,"name":"pipe","position":{"x":-34.5,"y":98.5}},
+            {"entity_number":25,"name":"pipe-to-ground","position":{"x":-34.5,"y":99.5}},
+            {"direction":12,"entity_number":26,"name":"pipe-to-ground","position":{"x":-33.5,"y":83.5}},
+            {"entity_number":27,"name":"pipe","position":{"x":-33.5,"y":85.5}},
+            {"direction":8,"entity_number":28,"name":"turbo-underground-belt","position":{"x":-33.5,"y":86.5},"type":"output"},
+            {"direction":8,"entity_number":29,"name":"turbo-transport-belt","position":{"x":-33.5,"y":87.5}},
+            {"direction":8,"entity_number":30,"name":"turbo-underground-belt","position":{"x":-33.5,"y":88.5},"type":"input"},
+            {"always_show":true,"entity_number":31,"icon":{"name":"lava","type":"fluid"},"name":"display-panel","position":{"x":-33.5,"y":94.5}},
+            {"entity_number":32,"name":"pipe","position":{"x":-33.5,"y":95.5}},
+            {"direction":8,"entity_number":33,"name":"turbo-underground-belt","position":{"x":-33.5,"y":96.5},"type":"output"},
+            {"direction":8,"entity_number":34,"name":"turbo-transport-belt","position":{"x":-33.5,"y":97.5}},
+            {"direction":8,"entity_number":35,"name":"turbo-underground-belt","position":{"x":-33.5,"y":98.5},"type":"input"},
+            {"always_show":true,"entity_number":36,"icon":{"name":"calcite"},"name":"display-panel","position":{"x":-33.5,"y":99.5}},
+            {"direction":8,"entity_number":37,"name":"turbo-underground-belt","position":{"x":-33.5,"y":100.5},"type":"output"},
+            {"control_behavior":{"circuit_contents_read_mode":1,"circuit_read_hand_contents":true},"direction":8,"entity_number":38,"name":"turbo-transport-belt","position":{"x":-33.5,"y":101.5}},
+            {"control_behavior":{"decider_conditions":{"conditions":[{"comparator":"≥","constant":60,"first_signal":{"name":"calcite"}}],"else_outputs":[],"outputs":[{"copy_count_from_input":false,"signal":{"name":"signal-battery-mid-level","type":"virtual"}}]}},"direction":8,"entity_number":39,"name":"decider-combinator","position":{"x":-33.5,"y":103}},
+            {"entity_number":40,"name":"pipe","position":{"x":-32.5,"y":85.5}},
+            {"control_behavior":{"circuit_condition":{"comparator":"=","constant":1,"first_signal":{"name":"calcite"}},"circuit_enabled":true},"direction":12,"entity_number":41,"name":"stack-inserter","position":{"x":-32.5,"y":87.5},"quality":"legendary"},
+            {"entity_number":42,"name":"pipe","position":{"x":-32.5,"y":95.5}},
+            {"control_behavior":{"circuit_condition":{"comparator":"=","constant":1,"first_signal":{"name":"calcite"}},"circuit_enabled":true},"direction":12,"entity_number":43,"name":"stack-inserter","position":{"x":-32.5,"y":97.5},"quality":"legendary"},
+            {"entity_number":44,"name":"medium-electric-pole","position":{"x":-31.5,"y":91.5},"quality":"legendary"},
+            {"control_behavior":{"decider_conditions":{"conditions":[{"comparator":"≥","constant":16,"first_signal":{"name":"landfill"}}],"else_outputs":[],"outputs":[{"copy_count_from_input":false,"signal":{"name":"landfill"}}]}},"direction":8,"entity_number":45,"name":"decider-combinator","position":{"x":-31.5,"y":93}},
+            {"control_behavior":{"decider_conditions":{"conditions":[{"comparator":"≤","constant":12,"first_signal":{"name":"calcite"}}],"else_outputs":[],"outputs":[{"copy_count_from_input":false,"signal":{"name":"calcite"}}]}},"direction":12,"entity_number":46,"name":"decider-combinator","position":{"x":-31,"y":99.5}},
+            {"entity_number":47,"name":"stack-inserter","override_stack_size":15,"position":{"x":-30.5,"y":89.5},"quality":"legendary"},
+            {"direction":8,"entity_number":48,"name":"stack-inserter","override_stack_size":15,"position":{"x":-30.5,"y":93.5},"quality":"legendary"},
+            {"entity_number":49,"items":[{"id":{"name":"speed-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":1,"stack":0},{"inventory":1,"stack":1}]}}],"name":"beacon","position":{"x":-29.5,"y":80.5},"quality":"legendary"},
+            {"entity_number":50,"name":"medium-electric-pole","position":{"x":-29.5,"y":83.5},"quality":"legendary"},
+            {"control_behavior":{"circuit_condition":{"comparator":"≠","constant":1,"first_signal":{"name":"signal-battery-mid-level","type":"virtual"}},"circuit_enabled":true,"output_networks":{"green":true,"red":false},"read_contents":true},"direction":4,"entity_number":51,"items":[{"id":{"name":"productivity-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":4,"stack":0},{"inventory":4,"stack":1},{"inventory":4,"stack":2},{"inventory":4,"stack":3}]}}],"name":"foundry","position":{"x":-29.5,"y":86.5},"quality":"legendary","recipe":"molten-copper-from-lava","recipe_quality":"normal"},
+            {"entity_number":52,"name":"stack-inserter","override_stack_size":15,"position":{"x":-29.5,"y":89.5},"quality":"legendary"},
+            {"control_behavior":{"read_contents":true},"entity_number":53,"items":[{"id":{"name":"speed-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":4,"stack":0},{"inventory":4,"stack":1},{"inventory":4,"stack":2},{"inventory":4,"stack":3}]}}],"name":"assembling-machine-3","position":{"x":-29.5,"y":91.5},"quality":"legendary","recipe":"landfill","recipe_quality":"normal"},
+            {"direction":8,"entity_number":54,"name":"stack-inserter","override_stack_size":15,"position":{"x":-29.5,"y":93.5},"quality":"legendary"},
+            {"control_behavior":{"circuit_condition":{"comparator":"≠","constant":1,"first_signal":{"name":"signal-battery-mid-level","type":"virtual"}},"circuit_enabled":true,"output_networks":{"green":true,"red":false},"read_contents":true},"direction":4,"entity_number":55,"items":[{"id":{"name":"productivity-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":4,"stack":0},{"inventory":4,"stack":1},{"inventory":4,"stack":2},{"inventory":4,"stack":3}]}}],"name":"foundry","position":{"x":-29.5,"y":96.5},"quality":"legendary","recipe":"molten-copper-from-lava","recipe_quality":"normal"},
+            {"entity_number":56,"name":"medium-electric-pole","position":{"x":-29.5,"y":99.5},"quality":"legendary"},
+            {"entity_number":57,"items":[{"id":{"name":"speed-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":1,"stack":0},{"inventory":1,"stack":1}]}}],"name":"beacon","position":{"x":-29.5,"y":102.5},"quality":"legendary"},
+            {"entity_number":58,"name":"stack-inserter","override_stack_size":15,"position":{"x":-28.5,"y":89.5},"quality":"legendary"},
+            {"direction":8,"entity_number":59,"name":"stack-inserter","override_stack_size":15,"position":{"x":-28.5,"y":93.5},"quality":"legendary"},
+            {"entity_number":60,"name":"pipe","position":{"x":-27.5,"y":89.5}},
+            {"entity_number":61,"name":"pipe-to-ground","position":{"x":-27.5,"y":90.5}},
+            {"control_behavior":{"circuit_condition":{"comparator":"=","constant":1,"first_signal":{"name":"landfill"}},"circuit_enabled":true},"direction":12,"entity_number":62,"name":"stack-inserter","position":{"x":-27.5,"y":91.5},"quality":"legendary"},
+            {"direction":8,"entity_number":63,"name":"pipe-to-ground","position":{"x":-27.5,"y":92.5}},
+            {"entity_number":64,"name":"pipe","position":{"x":-27.5,"y":93.5}},
+            {"direction":8,"entity_number":65,"name":"pipe-to-ground","position":{"x":-26.5,"y":84.5}},
+            {"entity_number":66,"name":"pipe","position":{"x":-26.5,"y":85.5}},
+            {"entity_number":67,"name":"pipe","position":{"x":-26.5,"y":86.5}},
+            {"entity_number":68,"name":"pipe","position":{"x":-26.5,"y":87.5}},
+            {"entity_number":69,"name":"pipe","position":{"x":-26.5,"y":88.5}},
+            {"entity_number":70,"name":"pipe","position":{"x":-26.5,"y":89.5}},
+            {"always_show":true,"entity_number":71,"icon":{"name":"lava","type":"fluid"},"name":"display-panel","position":{"x":-26.5,"y":91.5}},
+            {"entity_number":72,"name":"pipe","position":{"x":-26.5,"y":93.5}},
+            {"entity_number":73,"name":"pipe","position":{"x":-26.5,"y":94.5}},
+            {"entity_number":74,"name":"pipe","position":{"x":-26.5,"y":95.5}},
+            {"entity_number":75,"name":"pipe","position":{"x":-26.5,"y":96.5}},
+            {"entity_number":76,"name":"pipe","position":{"x":-26.5,"y":97.5}},
+            {"entity_number":77,"name":"pipe-to-ground","position":{"x":-26.5,"y":98.5}},
+            {"direction":12,"entity_number":78,"name":"pipe-to-ground","position":{"x":-25.5,"y":86.5}},
+            {"direction":12,"entity_number":79,"name":"pipe-to-ground","position":{"x":-25.5,"y":96.5}},
+            {"direction":4,"entity_number":80,"name":"pipe-to-ground","position":{"x":-24.5,"y":83.5}},
+            {"entity_number":81,"items":[{"id":{"name":"speed-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":1,"stack":0},{"inventory":1,"stack":1}]}}],"name":"beacon","position":{"x":-23.5,"y":80.5},"quality":"legendary"},
+            {"entity_number":82,"name":"pipe","position":{"x":-23.5,"y":83.5}},
+            {"entity_number":83,"name":"medium-electric-pole","position":{"x":-23.5,"y":89.5},"quality":"legendary"},
+            {"entity_number":84,"items":[{"id":{"name":"speed-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":1,"stack":0},{"inventory":1,"stack":1}]}}],"name":"beacon","position":{"x":-23.5,"y":91.5},"quality":"legendary"},
+            {"entity_number":85,"items":[{"id":{"name":"speed-module-3","quality":"legendary"},"items":{"in_inventory":[{"inventory":1,"stack":0},{"inventory":1,"stack":1}]}}],"name":"beacon","position":{"x":-23.5,"y":102.5},"quality":"legendary"},
+            {"direction":12,"entity_number":86,"name":"pipe-to-ground","position":{"x":-22.5,"y":83.5}}
+          ],
+          "icons": [
+            {
+              "index": 1,
+              "signal": {
+                "name": "foundry",
+                "quality": "legendary"
+              }
+            },
+            {
+              "index": 2,
+              "signal": {
+                "name": "beacon",
+                "quality": "legendary"
+              }
+            },
+            {
+              "index": 3,
+              "signal": {
+                "name": "molten-copper",
+                "type": "fluid"
+              }
+            },
+            {
+              "index": 4,
+              "signal": {
+                "name": "molten-iron",
+                "type": "fluid"
+              }
+            }
+          ],
+          "item": "blueprint",
+          "label": "Modular End Piece",
+          "version": 562954249961473,
+          "wires": [
+            [1,2,2,2],
+            [1,5,2,5],
+            [1,5,50,5],
+            [2,2,38,2],
+            [2,5,56,5],
+            [4,1,5,1],
+            [5,1,6,1],
+            [6,1,8,1],
+            [8,1,9,1],
+            [9,1,10,1],
+            [38,2,39,2],
+            [39,3,56,1],
+            [41,2,44,2],
+            [41,2,50,2],
+            [43,2,44,2],
+            [43,2,46,4],
+            [44,5,50,5],
+            [44,5,56,5],
+            [45,2,53,2],
+            [45,4,62,2],
+            [46,2,55,2],
+            [50,5,83,5],
+            [51,1,55,1],
+            [55,1,56,1],
+            [56,5,83,5],
+            [62,2,83,2]
+          ]
+        },
+        "index": 2
+      },
+      {
+        "blueprint": {
+          "description": "A modular RS latch for modular molten Iron/Copper. Change ONLY the input fluid (default is molten copper) Change bottom number depending on quality tank (max 50K!) Change middle signal to whichever signal you prefer (match output signal!) Connect red wire to beginning of modular chain, connect to the foundry and pump. Add as many fluid tanks as you see fit (more storage, longer cadence, better UPS) 1 RS LATCH PER FLUID!!!!!",
+          "entities": [
+            {"entity_number":1,"name":"storage-tank","position":{"x":-66.5,"y":179.5}},
+            {"entity_number":2,"name":"medium-electric-pole","position":{"x":-63.5,"y":177.5},"quality":"legendary"},
+            {"control_behavior":{"temperature_signal":{"name":"signal-T","type":"virtual"}},"direction":4,"entity_number":3,"name":"storage-tank","position":{"x":-63.5,"y":179.5}},
+            {"control_behavior":{"decider_conditions":{"conditions":[{"constant":6500,"first_signal":{"name":"molten-copper","type":"fluid"}},{"comparator":">","first_signal":{"name":"signal-battery-mid-level","type":"virtual"}},{"compare_type":"and","constant":20000,"first_signal":{"name":"molten-copper","type":"fluid"}}],"else_outputs":[],"outputs":[{"copy_count_from_input":false,"signal":{"name":"signal-battery-mid-level","type":"virtual"}}]}},"entity_number":4,"name":"decider-combinator","position":{"x":-62.5,"y":177}},
+            {"entity_number":5,"name":"storage-tank","position":{"x":-60.5,"y":179.5}}
+          ],
+          "icons": [
+            {
+              "index": 1,
+              "signal": {
+                "name": "storage-tank"
+              }
+            },
+            {
+              "index": 2,
+              "signal": {
+                "name": "decider-combinator"
+              }
+            }
+          ],
+          "item": "blueprint",
+          "label": "Modular RS latch",
+          "version": 562954249961473,
+          "wires": [
+            [2,1,4,3],
+            [3,2,4,2],
+            [4,2,4,4]
+          ]
+        },
+        "index": 3
+      },
+      {
+        "blueprint": {
+          "description": "Step 5. Add the included RS latch and FOLLOW DIRECTIONS! Failing them will result in the build NOT WORKING PROPERLY!!\nStep 6, the hard parts, Step A. Connect the RED wire to the end piece foundry\nStep 6B. Connect the RED wire to the foundries between each piece!\nStep 6C. Connect the GREEN wires on the LEFT side to each piece!\nStep 6D. Connect the GREEN wires in the middle to each piece!\nStep 6E (optional, but reccomended). Connect the GREEN wires on the right side between each piece!",
+          "entities": [
+            {"entity_number":1,"name":"medium-electric-pole","position":{"x":126.5,"y":191.5},"quality":"legendary"}
+          ],
+          "icons": [
+            {
+              "index": 1,
+              "signal": {
+                "name": "signal-info",
+                "type": "virtual"
+              }
+            }
+          ],
+          "item": "blueprint",
+          "label": "Direction A",
+          "version": 562954249961473
+        },
+        "index": 4
+      },
+      {
+        "blueprint": {
+          "description": "Step 6F. Remove the combinators from each piece EXCEPT THE END PIECE! (only if you followed 6E!)\nStep 7. Repeat step 5, so both molten Iron/Copper and Lava have storage tanks and an included RS latch!\nStep 8. Remove ALL DISPLAYS! And get rid of the landfill in front of the stack inserter assembers!\nStep 9, Great Success! Now you can include calcite from anywhere on the map and belt it into the start piece. And watch the build just magically work. Enjoy :)",
+          "entities": [
+            {"entity_number":1,"name":"medium-electric-pole","position":{"x":126.5,"y":191.5},"quality":"legendary"}
+          ],
+          "icons": [
+            {
+              "index": 1,
+              "signal": {
+                "name": "signal-info",
+                "type": "virtual"
+              }
+            }
+          ],
+          "item": "blueprint",
+          "label": "Direction B",
+          "version": 562954249961473
+        },
+        "index": 5
+      },
+      {
+        "blueprint": {
+          "description": "Secret step 10. Remove one legend stack inserter from top/bottom of assembler for any molten Iron foundry. It'll save UPS as molten Iron produces less waste stone. (2 total removed)\nOnly follow this step if you followed the two optional steps as you care about UPS savings and want to squeeze every bit of performance out of your build. If you see any improvments to the build, DM me and tell me :)",
+          "entities": [
+            {"entity_number":1,"name":"medium-electric-pole","position":{"x":126.5,"y":191.5},"quality":"legendary"}
+          ],
+          "icons": [
+            {
+              "index": 1,
+              "signal": {
+                "name": "signal-info",
+                "type": "virtual"
+              }
+            }
+          ],
+          "item": "blueprint",
+          "label": "Direction C",
+          "version": 562954249961473
+        },
+        "index": 6
+      }
+    ],
+    "description": "A simple modular Iron/Copper setup I made that will make end game much easier. Follow these steps for the BP to work properly! Foundation not included!\nStep 1. Start with placing the start piece over lava! The pumps require lava to work.\nStep 2. Add as many modular molten Iron/Copper pieces as you like, but keep in mind that you can only add 14 pieces total before you run into the limit of 240 items per second!\nStep 3. Add the end piece.\nStep 4. More directions included in A, B!",
+    "item": "blueprint-book",
+    "label": "Modular Molten Iron/Copper With an RS Latch",
+    "version": 562954249961473
+  }
+}
