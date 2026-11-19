@@ -1,6 +1,3 @@
----
-draft: true
----
 ## Summary
 
 - An inserter with nothing to do goes to sleep. While it is asleep it costs almost no update time.
