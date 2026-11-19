@@ -3,7 +3,7 @@
 ### Sequence of Steps
 
 ```mermaid
-flowchart TD
+flowchart LR
     A[Install Factorio] --> B[Install Gamemode]
     B --> C[Build and install mimalloc]
     C --> D[Inject mimalloc into Factorio]
