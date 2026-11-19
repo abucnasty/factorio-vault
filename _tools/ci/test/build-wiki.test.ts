@@ -108,6 +108,20 @@ test("pages: titles, addresses, folders, headings, excerpt and links; drafts and
   assert.doesNotMatch(wiki.bodies.get("how-to-benchmark")!, /private|author/);
 });
 
+test("links through former titles (aliases): a renamed page's old [[links]] reach it; a renamed draft's too, from drafts only", () => {
+  const r = repo();
+  r.write("wiki/Guides/How to Benchmark.md", "---\naliases:\n  - Benchmarking Guide\n---\n\n# Guide\n");
+  r.write("wiki/Home.md", "See [[Benchmarking Guide]], [[benchmarking guide#Steps|the steps]] and [[Old Plan]].\n");
+  r.write("wiki/New Plan.md", "---\ndraft: true\naliases: [Old Plan]\n---\nWIP.\n");
+  r.write("wiki/Notes.md", "---\ndraft: true\n---\nSee [[Old Plan]] and [[Benchmarking Guide]].\n");
+  r.commit();
+  const wiki = buildWiki(r.dir);
+  assert.deepEqual(wiki.problems, []);
+  assert.deepEqual(wiki.index.pages.find((p) => p.slug === "home")!.links, ["how-to-benchmark"], "a published page never links to a draft");
+  assert.deepEqual(wiki.draftIndex.pages.find((p) => p.slug === "notes")!.links, ["how-to-benchmark", "new-plan"]);
+  assert.deepEqual(wiki.draftIndex.pages.find((p) => p.slug === "new-plan")!.aliases, ["Old Plan"]);
+});
+
 test("duplicate titles (ignoring case), duplicate addresses, reserved addresses and taken aliases are problems naming the files", () => {
   const r = repo();
   r.write("wiki/Guides/Setup.md", "One.\n");
@@ -115,6 +129,7 @@ test("duplicate titles (ignoring case), duplicate addresses, reserved addresses 
   r.write("wiki/C++ Tips.md", "Three.\n");
   r.write("wiki/C Tips.md", "Four.\n");
   r.write("wiki/All.md", "Five.\n");
+  r.write("wiki/Deleted.md", "Five and a half.\n");
   r.write("wiki/Fine.md", "---\naliases: [C Tips, Old Name]\n---\nSix.\n");
   r.write("wiki/Also Fine.md", "---\naliases: [old name]\n---\nSeven.\n");
   r.write("wiki/Broken.md", "---\naliases: [unclosed\n---\nEight.\n");
@@ -125,12 +140,13 @@ test("duplicate titles (ignoring case), duplicate addresses, reserved addresses 
   assert.match(by("wiki/Other/setup.md").join(), /also the title of wiki\/Guides\/Setup\.md/);
   assert.match(by("wiki/C++ Tips.md").join(), /\/wiki\/c-tips is also that of wiki\/C Tips\.md/);
   assert.match(by("wiki/All.md").join(), /used by the site/);
+  assert.match(by("wiki/Deleted.md").join(), /used by the site/);
   assert.match(by("wiki/Fine.md").join(), /alias "C Tips" .* is the title or address of wiki\/C Tips\.md, wiki\/C\+\+ Tips\.md/);
   assert.match(by("wiki/Fine.md").join(), /alias "Old Name" .* also an alias of wiki\/Also Fine\.md/);
   assert.match(by("wiki/Also Fine.md").join(), /alias "old name" .* also an alias of wiki\/Fine\.md/);
   assert.equal(by("wiki/Broken.md").length, 1);
   assert.equal(wiki.index.pages.length, 0);
-  assert.deepEqual(wiki.invalid, ["all", "also-fine", "broken", "c-tips", "fine", "setup"]);
+  assert.deepEqual(wiki.invalid, ["all", "also-fine", "broken", "c-tips", "deleted", "fine", "setup"]);
 
   // A page already live keeps its last entry (and its files), marked stale.
   const live = {
