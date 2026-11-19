@@ -9952,6 +9952,7 @@ var TIMEOUT_MS = 12e4;
 function createGitRunner(gitBinary, cwd) {
   const env = {
     ...process.env,
+    PATH: pathWithHomebrew(process.env["PATH"]),
     // Fail instead of waiting for a password prompt nobody can see.
     GIT_TERMINAL_PROMPT: "0",
     GCM_INTERACTIVE: "never",
@@ -9979,6 +9980,12 @@ function createGitRunner(gitBinary, cwd) {
 function nodePathExists(cwd) {
   return async (p) => (0, import_fs.existsSync)((0, import_path.resolve)(cwd, p));
 }
+function pathWithHomebrew(path, platform = process.platform) {
+  if (platform !== "darwin") return path;
+  const dirs = (path ?? "").split(":").filter((d) => d !== "");
+  const missing = ["/opt/homebrew/bin", "/usr/local/bin"].filter((d) => !dirs.includes(d) && (0, import_fs.existsSync)(d));
+  return [...dirs, ...missing].join(":");
+}
 function defaultGitBinary() {
   if (process.platform === "darwin") {
     for (const p of ["/opt/homebrew/bin/git", "/usr/local/bin/git"]) {
@@ -9994,6 +10001,7 @@ var import_fs3 = require("fs");
 // src/process/node-process.ts
 var import_child_process2 = require("child_process");
 var import_fs2 = require("fs");
+var import_path2 = require("path");
 var nodeProcessRunner = {
   run(program, args, { cwd, signal, onStderrLine }) {
     return new Promise((done) => {
@@ -10035,11 +10043,43 @@ var nodeProcessRunner = {
     });
   }
 };
-function defaultNodeBinary() {
-  if (process.platform === "darwin") {
+var fromShell = /* @__PURE__ */ new Map();
+function nodeBinary(configured) {
+  if (process.platform !== "darwin") return configured || "node";
+  if (configured === "") {
     for (const p of ["/opt/homebrew/bin/node", "/usr/local/bin/node"]) if ((0, import_fs2.existsSync)(p)) return p;
+  } else if (isNodeItself(configured)) {
+    return configured;
   }
-  return "node";
+  if (!fromShell.has(configured)) fromShell.set(configured, nodeFromLoginShell(configured));
+  return fromShell.get(configured) ?? (configured || "node");
+}
+function isNodeItself(path) {
+  try {
+    const real = (0, import_fs2.realpathSync)(path);
+    if ((0, import_path2.basename)(real) !== "node") return false;
+    const head = Buffer.alloc(2);
+    const fd2 = (0, import_fs2.openSync)(real, "r");
+    try {
+      (0, import_fs2.readSync)(fd2, head, 0, 2, 0);
+    } finally {
+      (0, import_fs2.closeSync)(fd2);
+    }
+    return head.toString("latin1") !== "#!";
+  } catch {
+    return false;
+  }
+}
+function nodeFromLoginShell(configured) {
+  const shell = process.env["SHELL"] || "/bin/zsh";
+  const program = configured === "" ? "node" : `'${configured.replace(/'/g, `'\\''`)}'`;
+  const r = (0, import_child_process2.spawnSync)(shell, ["-ilc", `${program} -p process.execPath`], {
+    encoding: "utf8",
+    timeout: 1e4,
+    stdio: ["ignore", "pipe", "ignore"]
+  });
+  const path = (r.stdout ?? "").trim().split(/\r?\n/).at(-1)?.trim() ?? "";
+  return path.startsWith("/") && (0, import_fs2.existsSync)(path) ? path : null;
 }
 
 // src/process/flatpak.ts
@@ -10296,7 +10336,7 @@ function localString(app, key) {
 function loadRenderSettings(app) {
   return {
     factorioPath: localString(app, LOCAL.factorioPath),
-    nodePath: localString(app, LOCAL.nodePath) || defaultNodeBinary(),
+    nodePath: nodeBinary(localString(app, LOCAL.nodePath).trim()),
     extraArgs: parseArgs(localString(app, LOCAL.renderArgs)),
     enableMods: parseModNames(localString(app, LOCAL.renderMods)),
     modsFolder: localString(app, LOCAL.modsFolder),
@@ -10356,7 +10396,7 @@ var BlueprintSettingTab = class extends import_obsidian2.PluginSettingTab {
     );
     this.localText(
       "Node path",
-      "Node.js 22 or later, which runs the render tool. Leave empty to use node from the PATH (on a Mac, Homebrew's node if installed).",
+      "Node.js 22 or later, which runs the render tool. Leave empty to use node from the PATH (on a Mac, Homebrew's node if installed, else the node your login shell finds). What `which node` prints works too, a version manager's shim included.",
       LOCAL.nodePath,
       "node"
     );

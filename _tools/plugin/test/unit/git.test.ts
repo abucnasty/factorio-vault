@@ -9,7 +9,7 @@ import { join } from "node:path";
 import { after, beforeEach, describe, test } from "node:test";
 
 import { commitAndSync, firstErrorLine } from "../../src/git/commit-and-sync.ts";
-import { createGitRunner, nodePathExists } from "../../src/git/node-runner.ts";
+import { createGitRunner, nodePathExists, pathWithHomebrew } from "../../src/git/node-runner.ts";
 
 // Isolate every git call, including the runner's, from the developer's own
 // git config, like a fresh machine.
@@ -198,4 +198,17 @@ test("firstErrorLine picks the error, skips hints", () => {
     firstErrorLine({ code: 1, stdout: "", stderr: "hint: try this\nTo x\n ! [rejected]\nerror: failed to push some refs to 'x'\n" }),
     "error: failed to push some refs to 'x'",
   );
+});
+
+describe("pathWithHomebrew", () => {
+  test("off a Mac, PATH is left alone", () => {
+    assert.equal(pathWithHomebrew("/usr/bin:/bin", "linux"), "/usr/bin:/bin");
+    assert.equal(pathWithHomebrew(undefined, "linux"), undefined);
+  });
+
+  test("on a Mac, Homebrew's folders that exist come after the PATH, once", () => {
+    const brew = ["/opt/homebrew/bin", "/usr/local/bin"].filter((d) => existsSync(d));
+    assert.equal(pathWithHomebrew("/usr/bin:/bin", "darwin"), ["/usr/bin", "/bin", ...brew].join(":"));
+    assert.equal(pathWithHomebrew(["/usr/bin", ...brew].join(":"), "darwin"), ["/usr/bin", ...brew].join(":"));
+  });
 });

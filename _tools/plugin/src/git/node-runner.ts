@@ -12,6 +12,7 @@ const TIMEOUT_MS = 120_000;
 export function createGitRunner(gitBinary: string, cwd: string): GitRunner {
   const env = {
     ...process.env,
+    PATH: pathWithHomebrew(process.env["PATH"]),
     // Fail instead of waiting for a password prompt nobody can see.
     GIT_TERMINAL_PROMPT: "0",
     GCM_INTERACTIVE: "never",
@@ -41,6 +42,19 @@ export function createGitRunner(gitBinary: string, cwd: string): GitRunner {
 /** pathExists for commitAndSync: resolves git's paths against the cwd. */
 export function nodePathExists(cwd: string): (path: string) => Promise<boolean> {
   return async (p) => existsSync(resolve(cwd, p));
+}
+
+/**
+ * PATH for git and the hooks it runs. Obsidian started from the macOS Dock
+ * does not see the shell PATH, so git-lfs (Homebrew's) is not found: the
+ * LFS filters and pre-push hook fail and nothing with an image can be
+ * committed or pushed. Homebrew's folders are added where they exist.
+ */
+export function pathWithHomebrew(path: string | undefined, platform = process.platform): string | undefined {
+  if (platform !== "darwin") return path;
+  const dirs = (path ?? "").split(":").filter((d) => d !== "");
+  const missing = ["/opt/homebrew/bin", "/usr/local/bin"].filter((d) => !dirs.includes(d) && existsSync(d));
+  return [...dirs, ...missing].join(":");
 }
 
 /**

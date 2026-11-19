@@ -8,7 +8,7 @@ import type { Plugin } from "obsidian";
 
 import type { RenderSettings } from "../commands/host.ts";
 import { DEFAULT_LINK_BASE, LEGACY_LINK_BASE } from "../core/index.ts";
-import { defaultNodeBinary } from "../process/node-process.ts";
+import { nodeBinary } from "../process/node-process.ts";
 
 export interface StoredSettings {
   /** Comma-separated. */
@@ -74,7 +74,7 @@ function localString(app: App, key: string): string {
 export function loadRenderSettings(app: App): RenderSettings {
   return {
     factorioPath: localString(app, LOCAL.factorioPath),
-    nodePath: localString(app, LOCAL.nodePath) || defaultNodeBinary(),
+    nodePath: nodeBinary(localString(app, LOCAL.nodePath).trim()),
     extraArgs: parseArgs(localString(app, LOCAL.renderArgs)),
     enableMods: parseModNames(localString(app, LOCAL.renderMods)),
     modsFolder: localString(app, LOCAL.modsFolder),
@@ -169,7 +169,7 @@ export class BlueprintSettingTab extends PluginSettingTab {
     );
     this.localText(
       "Node path",
-      "Node.js 22 or later, which runs the render tool. Leave empty to use node from the PATH (on a Mac, Homebrew's node if installed).",
+      "Node.js 22 or later, which runs the render tool. Leave empty to use node from the PATH (on a Mac, Homebrew's node if installed, else the node your login shell finds). What `which node` prints works too, a version manager's shim included.",
       LOCAL.nodePath,
       "node",
     );
