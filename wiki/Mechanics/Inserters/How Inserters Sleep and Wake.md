@@ -1,3 +1,6 @@
+---
+draft: true
+---
 ## Summary
 
 - An inserter with nothing to do goes to sleep. While it is asleep it costs almost no update time.
@@ -73,7 +76,6 @@ Points that are easy to get wrong:
 - **A machine wakes all of its waiting input inserters together.** It keeps one list of them. It does not know which inserter can use the new room, so it wakes all of them and each one checks for itself.
 - **A productivity bonus does not wake an input inserter.** It uses no ingredients, so it makes no room.
 - **A chest wakes its inserters on every item added**, not only on an item they can use. Each woken inserter then searches the chest for something to take. The cost grows with the number of slots and the number of inserters, so the developers advise keeping such chests small.
-- **A pickup from a belt wakes the other inserters on that belt.** When one inserter picks an item up from a belt, the other sleeping inserters that take from the same transport line are woken too. A transport line is a stretch of belt that the game moves as one piece. So one busy inserter on a line keeps waking its neighbours, whether or not they have anything to take.
 - **A pickup from a belt wakes the other inserters on that belt.** When one inserter picks an item up from a belt, the other sleeping inserters that take from the same transport line are woken too. A transport line is a stretch of belt that the game moves as one piece. So one busy inserter on a line keeps waking its neighbours, whether or not they have anything to take.
 - **An inserter can sleep and be woken in the same tick.** An inserter is updated before its machine. It can go to sleep in its own update, and the machine can wake it again later in that tick. This matters only when you count wakeups: such an inserter can have two close together.
 
@@ -211,4 +213,3 @@ The rules on this page that a Factorio developer has stated, with the statement 
 | Most inserter time goes to belt pickups                                               | Rseding91 | 2022-04-15 | 1.1          | Most inserter time is spent finding and chasing items on belts ([forum post](https://forums.factorio.com/viewtopic.php?p=566292))                                                                                         |
 | Most inserter time goes to belt pickups                                               | Rseding91 | 2025-12-06 | 2.0.72       | By far most inserter time in any save goes to taking items from belts. A belt pickup starts by going through the items on the belt from its front (Discord)                                                               |
 | A wired inserter's circuit connection is updated every tick, asleep or not            | boskid    | 2026-10-17 | 2.1.22       | An entity that sleeps gets no updates, but the circuit connection of a wired entity is updated every tick. It skips its costly part when no signal changed (Discord)                                                      |
-
