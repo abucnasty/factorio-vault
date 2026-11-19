@@ -17,6 +17,11 @@ Direct insertion has two major advantages:
 1. Items are only transferred once instead of twice.
 2. But even more, transfers between chests (machines work the same way as chests for item transfers) are less UPS expensive than transfers to belts. Chest to chest transfers allow to always drop all items the inserter holds at once. If you cannot get buildings close enough for an inserter, it is better to use an intermediate chest (or even two) before using a belt. So chest -> chest -> chest -> chest is better than chest -> belt -> chest even though it is 3 transfers instead of 2.
 
-You will notice that there is a conflict between the methods: more DI often means that you need more machines. As a rule of thumb, if you need more than 4 additional machines over belting items, it could be that direct insertion is not better. 
+You will notice that there is a conflict between the methods: more DI often means that you need more machines. As a rule of thumb, if you need more than 4 additional machines over belting items, it could be that direct insertion is not better.
 
 Direct insertion is limited by how you can arrange buildings around each other. You cannot direct insert everything, so what are the priorities?
+
+1. It's the amount of items transferred that cost UPS, so choose the item with the highest volume in the target machine. 
+2. Look for machines where the ratios are somewhat close to each other.
+
+A good example for DI are blue chips. Green chips and the ingredients for green chips come at a high volume. Arranging them around each other with direct insertion eliminates a lot of item transfers without need all that many additional machines. In addition, the volume of the items would make using belts more difficult.![[Blubb-314535e1.webp]]
