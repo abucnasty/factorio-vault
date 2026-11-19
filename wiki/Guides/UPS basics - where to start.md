@@ -5,7 +5,11 @@ This article aims at providing an introduction to UPS optimised building in Fact
 
 Each tick Factorio has to calculate the state of the game and advance everything one tick forward: Machines, items, belts, inserters etc. The calculation of these things takes time. Factorio runs at 60 updates per second, so the game has \~16 milliseconds to calculate and render each frame. If the game takes longer than 16 milliseconds for an update, the game starts to run slower than 60 UPS. Instead, the game runs the simulation at the maximum speed your computer can handle.
 
-Therefore, to keep the game at 60 UPS, you have to reduce the amount of calculations the game has to do each tick. And that is the first and most important rule of UPS optimisation: Achieve the same outcome while doing less stuff. "Less stuff" means:
+Therefore, to keep the game at 60 UPS, you have to reduce the amount of calculations the game has to do each tick. And that is the first and most important rule of UPS optimisation: 
+
+## A. Achieve the same outcome while doing less stuff. 
+
+"Less stuff" means:
 
 - **Using less machines**: Use higher quality buildings and max out the beacon count around each building. Use productivity modules in any machine accepting productivity. One building producing a certain amount of output takes way less time to calculate then two buildings producing the same output.
 - **Use the largest and fastest inserter:** Basically this means Q5 stack inserters for everything everywhere. The only exception can be items with a stack size of one like asteroid chunks, there a fast inserter does the same job. There are rare cases were a bulk inserter can be useful. Never use yellow or red inserters. Their small hand capacity and slow turning speeds makes them very expensive.
