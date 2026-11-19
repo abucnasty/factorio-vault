@@ -194,6 +194,11 @@ EOF
   if [ "$OS" = mac ] && [ "$(command -v git)" != /usr/bin/git ]; then
     info "if Obsidian says it cannot find git: Settings, Git, Custom Git binary path = $(command -v git); same for Settings, Factorio Blueprints, Git binary"
   fi
+  # Obsidian started from the Dock has PATH /usr/bin:/bin:/usr/sbin:/sbin, so the LFS hooks and filters fail
+  local lfs; lfs=$(command -v git-lfs)
+  if [ "$OS" = mac ] && [ -n "$lfs" ] && [ "${lfs%/*}" != /usr/bin ]; then
+    info "for pushing from Obsidian: Settings, Git, Advanced, Additional PATH environment variable paths = ${lfs%/*}, then restart Obsidian"
+  fi
 }
 
 # ── render storage (Git LFS on the Worker) ───────────────────────────────
