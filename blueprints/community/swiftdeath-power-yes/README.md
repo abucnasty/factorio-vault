@@ -9,4 +9,4 @@ entities: 2910
 factorio_version: 2.1.24
 ---
 
-![siftwdeath-power-yes](https://vault.abucnasty.dev/blueprints/community/siftwdeath-power-yes/cover.jpg)
+![swiftdeath-power-yes](https://vault.abucnasty.dev/blueprints/community/swiftdeath-power-yes/cover.jpg)
