@@ -4,7 +4,7 @@ authors:
   - swiftdeath007
 version: "1"
 posted: 2026-11-18
-status: draft
+status: public
 entities: 2910
 factorio_version: 2.1.24
 ---
