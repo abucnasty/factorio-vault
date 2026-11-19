@@ -1,8 +1,8 @@
 ---
-title: siftwdeath-power-yes
+title: swiftdeath-power-yes
 authors:
   - swiftdeath007
-version: "1"
+version: "1.0"
 posted: 2026-11-18
 status: public
 entities: 2910
