@@ -1,4 +1,31 @@
 ## Library and Software Installations
+
+### Sequence of Steps
+
+```mermaid
+flowchart TD
+    A[Install Factorio] --> B[Install Gamemode]
+    B --> C[Build and install mimalloc]
+    C --> D[Inject mimalloc into Factorio]
+    D --> E[Configure huge pages]
+    E --> F[Create a launch shell script]
+    F --> G[Create a desktop icon]
+    G --> H([Launch Factorio from the desktop icon])
+
+    subgraph Libraries and software
+        A
+        B
+        C
+        D
+        E
+    end
+
+    subgraph Desktop configuration
+        F
+        G
+    end
+```
+
 ### Install Factorio
 
 We want to install the standalone copy (not steam) for this guide. You can download the game by linking your steam account on factorios website or purchasing the game directly from their website: https://factorio.com/download
@@ -8,21 +35,25 @@ It will come as a zip file, extract the contents to a place you will remember an
 For this guide, factorio was placed under the home directory under a folder called `Games`.
 
 In this example and for the purposes of this guide, the factorio binary is located here:
+
 ```
 ~/Games/factorio/bin/x64/factorio
 ```
 
 ### Gamemode
+
 Reference: https://github.com/FeralInteractive/gamemode
 
 Open a terminal.
 
 Execute the following command to install the prerequisites:
+
 ```sh
 sudo dnf install meson systemd-devel pkg-config git dbus-devel inih-devel
 ```
 
 Go to a directory where you want to download gamemode. For this example this will be the home directory:
+
 ```sh
 cd ~ # takes you to the home directory for your user
 ```
@@ -42,6 +73,7 @@ Reference: https://github.com/microsoft/mimalloc.git
 At the time of writing this article (2026-04-02) fedoras package manager only comes with mimalloc version 2 that can be installed. In order to install version 3 which has some improvements to performance, we will build it from source.
 
 Open a terminal and install development tools:
+
 ```sh
 sudo dnf group install development-tools
 sudo dnf install cmake
@@ -54,12 +86,15 @@ cd ~
 ```
 
 Next we will clone the project from github:
+
 ```
 git clone https://github.com/microsoft/mimalloc.git
 ```
+
 > Note: if you don't have git installed you can install it by executing `sudo dnf install git`
 
 Next we will switch to the dev3 branch:
+
 ```sh
 cd mimalloc
 git switch dev3
@@ -75,6 +110,7 @@ make
 ```
 
 You should now see a file called `libmimalloc.so` in the release directory. Take note of the absolute file path to this file as we will need it to inject the library into factorio. For this tutorial, since these operations were done in the home directory, the file path would be:
+
 ```
 ~/mimalloc/out/release/libmimalloc.so
 ```
@@ -99,32 +135,32 @@ We can use gamemode to prioritize factorio by slightly modifying the above scrip
 LD_PRELOAD=/home/abucnasty/mimalloc/out/release/libmimalloc.so gamemoderun /home/abucnasty/Games/factorio/bin/x64/factorio
 ```
 
-
-
-
 ### Configuring Huge Pages
 
 You may want to enable huge pages to boost the game further by making use of huge 1GB pages. Keep in mind that the amount of RAM you have directly determines how many pages you want to allocate to factorio. Using this method will preallocate the number of pages you specify and make it unavailable to any other application so use with caution. This also comes with the downside of having to disable background saves in linux.
 
 The number of pages you should allocate to factorio is highly dependent on the save file you are going to run. The example save file that is used is a megabase by abucnasty that takes 10.5 GB of RAM to run. We will allocate 10 pages here so we can encapsulate almost all of the ram in huge pages.
 
-
 To enable large pages, on a fresh reboot open a terminal and get root level access:
+
 ```sh
 sudo -s
 ```
 
 Next allocate 10 GB of huge pages (change the number for the number of pages you want to allocate)
+
 ```sh
 echo 10 > /sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages
 ```
 
 Test that the pages are allocated:
+
 ```sh
 grep -R . /sys/kernel/mm/hugepages/hugepages-*/nr_hugepages && grep -R . /sys/kernel/mm/hugepages/hugepages-*/free_hugepages
 ```
 
 You should see a print out like the following:
+
 ```
 /sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages:10
 /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages:0
@@ -140,6 +176,7 @@ MIMALLOC_RESERVE_HUGE_OS_PAGES=10
 ```
 
 We can test this by opening a new terminal and running:
+
 ```sh
 MIMALLOC_RESERVE_HUGE_OS_PAGES=10 LD_PRELOAD=/home/abucnasty/mimalloc/out/release/libmimalloc.so gamemoderun /home/abucnasty/Games/factorio/bin/x64/factorio
 ```
@@ -160,12 +197,12 @@ It should now print out:
 ```
 
 ## Desktop Configuration
+
 ### Create Launch Shell Scripts
 
 For convenience, we want to be able to launch the game in one command and not worry about entering a lot of things into a terminal every time we want to go play factorio.
 
 The below script is based on the examples above assuming that you have huge pages enabled and have built mimalloc.
-
 
 ```sh
 #!/usr/bin/env bash
@@ -232,7 +269,6 @@ The icon can be any png, but if you want to use the exact icon in the example it
 
 ![alt text](_attachments/engineer_q5.png)
 
-Having a separate icon is convenient for making it obvious when you are running factorio without mimalloc / huge pages but is completely optional. 
+Having a separate icon is convenient for making it obvious when you are running factorio without mimalloc / huge pages but is completely optional.
 
 Now you will have a desktop launcher to start the game with mimalloc and huge pages enabled directly from the desktop.
-
