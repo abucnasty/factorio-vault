@@ -17,8 +17,8 @@ export const WIKI_ROOT = "wiki";
 export const WIKI_ATTACHMENTS = "_attachments";
 /** The front page, wiki/Home.md, shown at /wiki. */
 export const WIKI_HOME_TITLE = "Home";
-/** Slugs the site uses for its own wiki pages (/wiki/all lists every page). */
-export const WIKI_RESERVED_SLUGS: readonly string[] = ["all"];
+/** Slugs the site uses for its own wiki pages (/wiki/all lists every page; /wiki/deleted, recently deleted ones). */
+export const WIKI_RESERVED_SLUGS: readonly string[] = ["all", "deleted"];
 
 /** True for a path under wiki/ with no segment starting with "." (wiki/ itself excluded). */
 export function isWikiPath(path: string): boolean {

@@ -196,13 +196,16 @@ export function buildWiki(repo: string, opts: { commit?: string; now?: Date } = 
   const live = published.filter((c) => !bad.has(c));
   const invalid = [...new Set(all.filter((c) => bad.has(c) && !c.read.draft && c.slug !== "").map((c) => c.slug))].sort();
 
-  // Links resolve to published pages by title, then by alias, ignoring case;
-  // a draft's links may also reach other drafts (by title).
+  // Links resolve to published pages by title, then by alias (a former
+  // title: a renamed page's old [[links]] keep working), ignoring case; a
+  // draft's links may also reach other drafts, by title, then by alias (a
+  // renamed draft). The site (src/wikiCore.ts findWikiTarget) resolves the same way.
   const target = new Map<string, string>();
   for (const c of live) target.set(titleKey(c.title), c.slug);
   for (const c of live) for (const a of c.read.aliases) if (!target.has(titleKey(a))) target.set(titleKey(a), c.slug);
   const draftTarget = new Map(target);
   for (const c of draftPages) if (!draftTarget.has(titleKey(c.title))) draftTarget.set(titleKey(c.title), c.slug);
+  for (const c of draftPages) for (const a of c.read.aliases) if (!draftTarget.has(titleKey(a))) draftTarget.set(titleKey(a), c.slug);
 
   const allFiles = [...fileBlobs.keys()];
   const publishable = allFiles.filter(isPublishable);
