@@ -5,9 +5,9 @@ This article aims at providing an introduction to UPS optimised building in Fact
 
 Each tick Factorio has to calculate the state of the game and advance everything one tick forward: Machines, items, belts, inserters etc. The calculation of these things takes time. Factorio runs at 60 updates per second, so the game has \~16 milliseconds to calculate and render each frame. If the game takes longer than 16 milliseconds for an update, the game starts to run slower than 60 UPS. Instead, the game runs the simulation at the maximum speed your computer can handle.
 
-Therefore, to keep the game at 60 UPS, you have to reduce the amount of calculations the game has to do each tick. And that is the first and most important rule of UPS optimisation: 
+Therefore, to keep the game at 60 UPS, you have to reduce the amount of calculations the game has to do each tick. And that is the first and most important rule of UPS optimisation:
 
-## A. Achieve the same outcome while doing less stuff. 
+## A. Achieve the same outcome while doing less stuff.
 
 "Less stuff" means:
 
@@ -28,6 +28,16 @@ Direct insertion is limited by how you can arrange buildings around each other. 
 1. It's the amount of items transferred that cost UPS, so choose the item with the highest volume in the target machine.
 2. Look for machines where the ratios are somewhat close to each other.
 
-A good example for DI are blue chips. Green chips and the ingredients for green chips come at a high volume. Arranging them around each other with direct insertion eliminates a lot of item transfers without need all that many additional machines. In addition, the volume of the items would make using belts more difficult.![[Blubb-314535e1.webp]]
+A good example for DI are blue chips. Green chips and the ingredients for green chips come at a high volume. Arranging them around each other with direct insertion eliminates a lot of item transfers without need all that many additional machines. In addition, the volume of the items would make using belts more difficult.
 
 Another important lategame method of avoiding to belt high volume items is to build directly on the resource patches. Very easy doable for smelting of iron and copper in the foundries. Put a miner down pointing directly into the foundry and you only have to deal with the liquids. More advanced methods put entire science builds on ore patches, especially for grey and purple science.
+
+## B. Inserter clocking
+
+The second main method to optimise your UPS is to clock inserters. In any base, inserters are the single most expensive category of entities. Inserters are very well optimised but they are also what holds a Factorio base together. They work always, under any condition, in any configuration. If you put an inserter down, it will do the job. But in a megabase where UPS becomes a concern, you actually don't need inserters to be able to work always under any condition in any configuration. You only need to work them in the very specific situation you put the inserter in.
+
+And that is where clocking come in. Simple put, you cripple the inserter to no longer be the jack of all trades. Instead, you limit the inserter to only do this one job you put it on. This is done via circuits. Instead of having the game determine if an inserter has something to do, you use circuits to make those decisions beforehand and enable the inserter only when there is something for the inserter to do.
+
+As a result, clocking requires a lot of work to be put into: You need to understand your build, you need to understand what happens when and than set the right circuits for the inserter. If you clock your build wrong, you can easily make it no longer work.
+
+That's also the reason why you should not start with clocking until you optimised your builds following the guidelines under A. The gains from clocking are smaller and harder to achieve compared to building in a more efficient manner.
