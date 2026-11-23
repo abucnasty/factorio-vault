@@ -27,7 +27,9 @@ Direct insertion has two major advantages:
 1. Items are only transferred once instead of twice.
 2. But even more, transfers between chests (machines work the same way as chests for item transfers) are less UPS expensive than transfers to belts. Chest to chest transfers allow to always drop all items the inserter holds at once. If you cannot get buildings close enough for an inserter, it is better to use an intermediate chest (or even two) before using a belt. So chest -> chest -> chest -> chest is better than chest -> belt -> chest even though it is 3 transfers instead of 2.
 
-You will notice that there is a conflict between the methods: more DI often means that you need more machines. As a rule of thumb, if you need more than 4 additional machines over belting items, it could be that direct insertion is not better.
+You will notice that there is a conflict between the methods: On the one side, using as few machines as possible, on the other side, doing as much DI as possible. Direct insertion limits the output of a machine to how much you can transfer to other machines taking this input directly. Also, placing buildings close enough to each other to use direct insertion reduces the number of beacons, you can place around those buildings. As a result, using direct insertion increases the amount of machines you need for the same output.
+
+Hence, there is a tradeoff: More machines to achieve less item transfers. As a rule of thumb, if you need more than 4 additional machines over belting items, it could be that direct insertion is not better. However, this highly depends on what items are involved and many other factors. So this rule of thumb is only a first indication that direct insertion may not be straight up better in the case at hand.
 
 Direct insertion is limited by how you can arrange buildings around each other. You cannot direct insert everything, so what are the priorities?
 
@@ -36,7 +38,10 @@ Direct insertion is limited by how you can arrange buildings around each other. 
 
 A good example for DI are blue chips. Green chips and the ingredients for green chips come at a high volume. Arranging them around each other with direct insertion eliminates a lot of item transfers without need all that many additional machines. In addition, the volume of the items would make using belts more difficult.
 
-Another important lategame method of avoiding to belt high volume items is to build directly on the resource patches. Very easy doable for smelting of iron and copper in the foundries. Put a miner down pointing directly into the foundry and you only have to deal with the liquids. More advanced methods put entire science builds on ore patches, especially for grey and purple science.
+Another important lategame method of avoiding to belt high volume items is to build directly on the resource patches. Very easy doable for smelting of iron and copper in the foundries. Put a miner down pointing directly into the foundry and you only have to deal with the liquids. More advanced methods put entire science builds on ore patches, especially for grey and purple science. \[Future link to respective benchmarks]. The reasons for grey and purple science benefitting heavily from building on patch are:
+
+- Walls, grenades, furnaces and rails require a high volume of the raw resources stone and coal while at the same time offering only few production steps with limited productivity bonuses. Hence, scaling up those sciences requires rivers of stone and coal if belted.
+- It turns out that the ratios for on patch builds for those two sciences are very favorable: The number of buildings needed, beacon counts, inserters: if built carefully, it all lines up well.
 
 ## B. Inserter clocking
 
