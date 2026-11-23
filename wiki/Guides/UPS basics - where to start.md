@@ -3,6 +3,14 @@ draft: true
 ---
 This article aims at providing an introduction to UPS optimised building in Factorio. Where to start, what are the priorities and what helps the most why. This article only covers the basics in each section and provides general guidelines. UPS optimisation is very specific: if you dig deeper, there are many exceptions and edge cases where things are differently.
 
+## Executive summary/TL;DR
+
+Building more efficiently yields the highest UPS gains: Reduce the number of item transfers as much as possible. Use direct insertion to avoid chest-to-belt-transfers. Use as few splitters and belt merges as possible via clever routing.
+
+Only once you have your build streamlined, it is worthwile to look into clocking your build. Inserters that are active often but not all the time yield the most benefit for clocking. Basing the activation of inserters on an actual clock yields the highest UPS gain.
+
+## Basics
+
 Each tick Factorio has to calculate the state of the game and advance everything one tick forward: Machines, items, belts, inserters etc. The calculation of these things takes time. Factorio runs at 60 updates per second, so the game has \~16 milliseconds to calculate and render each frame. If the game takes longer than 16 milliseconds for an update, the game starts to run slower than 60 UPS. Instead, the game runs the simulation at the maximum speed your computer can handle.
 
 Therefore, to keep the game at 60 UPS, you have to reduce the amount of calculations the game has to do each tick. And that is the first and most important rule of UPS optimisation:
@@ -15,6 +23,7 @@ Therefore, to keep the game at 60 UPS, you have to reduce the amount of calculat
 - **Use the largest and fastest inserter:** Basically this means Q5 stack inserters for everything everywhere. The only exception can be items with a stack size of one like asteroid chunks, there a fast inserter does the same job. There are rare cases were a bulk inserter can be useful. Never use yellow or red inserters. Their small hand capacity and slow turning speeds makes them very expensive.
 - **Reduce the number of item transfers**: Transferring items between chests, belts and machines is one of the most UPS expensive things in Factorio. Hence, it helps a lot by reducing the number of times items are transferred. The most important method to reduce item transfers is to directly insert items from one machine into another, skipping the intermediate step of transferring the item to a belt, transporting it and inserting it into the target machine.
 - **Only drop items on empty belts:**  When transferring an item to a belt, the inserter has to scan the belt if it can drop items, than drop a stack of 4 items and scan the belt again for the next gap. If the belt is not empty, the inserter keeps on scanning until there is a gap. Each failed scan costs UPS. A common method to make ensure an empty belt is to make a separate few tile long belt the inserter can drop on and connect the belt sideways to the actual target belt: the few belt tiles act as buffer to hold the items until there is space on the main belt. Joining belts is way cheaper than having an inserter scan for gaps.
+- **Less splitters and belt merges:** Think about where and how many resources you need. Balancers are usually not needed. Avoid merging belts that you need to split again down the line. Unless detrimental to what you want to achieve, set priorities on splitter inputs and outputs.
 
 Direct insertion has two major advantages:
 
