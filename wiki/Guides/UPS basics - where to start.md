@@ -1,6 +1,3 @@
----
-draft: true
----
 This article aims at providing an introduction to UPS optimised building in Factorio. Where to start, what are the priorities and what helps the most why. This article only covers the basics in each section and provides general guidelines. UPS optimisation is very specific: if you dig deeper, there are many exceptions and edge cases where things are differently.
 
 ## Executive summary/TL;DR
