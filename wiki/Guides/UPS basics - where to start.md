@@ -1,7 +1,7 @@
 ---
 draft: true
 ---
-This article aims at providing an introduction to UPS optimised building in Factorio. Where to start, what are the priorities and what helps the most why.
+This article aims at providing an introduction to UPS optimised building in Factorio. Where to start, what are the priorities and what helps the most why. This article only covers the basics in each section and provides general guidelines. UPS optimisation is very specific: if you dig deeper, there are many exceptions and edge cases where things are differently.
 
 Each tick Factorio has to calculate the state of the game and advance everything one tick forward: Machines, items, belts, inserters etc. The calculation of these things takes time. Factorio runs at 60 updates per second, so the game has \~16 milliseconds to calculate and render each frame. If the game takes longer than 16 milliseconds for an update, the game starts to run slower than 60 UPS. Instead, the game runs the simulation at the maximum speed your computer can handle.
 
@@ -41,3 +41,28 @@ And that is where clocking come in. Simple put, you cripple the inserter to no l
 As a result, clocking requires a lot of work to be put into: You need to understand your build, you need to understand what happens when and than set the right circuits for the inserter. If you clock your build wrong, you can easily make it no longer work.
 
 That's also the reason why you should not start with clocking until you optimised your builds following the guidelines under A. The gains from clocking are smaller and harder to achieve compared to building in a more efficient manner.
+
+### I. How does clocking work?
+
+Clocking means that the inserter is disabled via circuit network and only enabled when a condition set by the player is met. There are two main ways of how to clock an inserter. \[For a more in-depth description of clocking strategies, please refer to ADVANCED CLOCKING GUIDE].
+
+1. Clock the inserter based on some information retrieved via the circuit network, e.g., read content on the assembler the inserter shall insert into and only activate the inserter if the item you want to put in is below a certain threshold. This could be "i) read content on the red science assembler" and "ii) set the inserter to only be active if copper plates in the red science assembler are below 5".
+
+   This way of clocking is easier to get into and simple to setup. It makes sense for beginners to use this a couple of times to get a hang of how it works and what happens. Clocking this way already results in some performance gains as reading a machine via circuit network is usually cheaper than having the inserter check if it can insert items into the machine.
+2. The more advanced method that yields the most UPS gains is basing the activation of the inserters on an actual ingame clock \[LINK: how to build a clock] as shown in the screenshot. For this method, you calculate every how many ticks an inserter needs to be active to for example put copper plates into your science assembler. If your red science assembler is consuming 10 copper plates a second and a stack inserter can input 16 plates at once, the inserter needs to be activate once every (16 items per swing) / (10 items per second) * (60 ticks per second) = (96 ticks per swing). In the simple case, you set a clock to run for 96 ticks and activate the inserter for at least 4 ticks if you grab from a belt or for 1 tick when transferring from a chest. If you have more inserters set to activate on the same condition, it is beneficial to put down a second decider combinator that evaluates if the inserters are to be activated. This way, the inserters get sent only "on or off" via the circuit network and not every inserter has to evaluate the condition by itself.
+
+
+
+### II. Where to start with clocking?
+
+Clocking is especially beneficial for inserters that are active often but not all the time. 
+
+Prime candidates are inserters inserting into science assemblers or taking out from them.
+
+As most inserters are worth clocking, below follows a list of cases where clocking is often not worth it or pretty difficult to make it worth it. As a beginner, you should leave those cases aside and start with clocking other stuff.
+
+- Inserters that are active all or most of the time or inserter into very fast machines are usually not worth clocking. This is especially true for anything around green chips. The throughput for q5 stacks inserters is 120/sec from chest to chest (8 ticks per swing) and around 80/sec from or to an belt (12 ticks per swing. Depending on the specific case, it can be 11 or 13 ticks as well). If an inserter is close to those values, don't clock them.
+- Some items are difficult to clock due to low or limiting input and output buffers and/or odd ratios along the production chain. This is especially true for things produced in EMPs as they allow for 175% production bonus. This makes aligning inputs and outputs via clocking very difficult. Hence, red chips and supercapacitors/superconductors are very hard to clock.
+- Direct insertion from plastic into LDS and LDS into multiple yellow science assemblers is also difficult to clock.
+
+### III. Best practices
