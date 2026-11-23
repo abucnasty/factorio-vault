@@ -51,18 +51,30 @@ Clocking means that the inserter is disabled via circuit network and only enable
    This way of clocking is easier to get into and simple to setup. It makes sense for beginners to use this a couple of times to get a hang of how it works and what happens. Clocking this way already results in some performance gains as reading a machine via circuit network is usually cheaper than having the inserter check if it can insert items into the machine.
 2. The more advanced method that yields the most UPS gains is basing the activation of the inserters on an actual ingame clock \[LINK: how to build a clock] as shown in the screenshot. For this method, you calculate every how many ticks an inserter needs to be active to for example put copper plates into your science assembler. If your red science assembler is consuming 10 copper plates a second and a stack inserter can input 16 plates at once, the inserter needs to be activate once every (16 items per swing) / (10 items per second) * (60 ticks per second) = (96 ticks per swing). In the simple case, you set a clock to run for 96 ticks and activate the inserter for at least 4 ticks if you grab from a belt or for 1 tick when transferring from a chest. If you have more inserters set to activate on the same condition, it is beneficial to put down a second decider combinator that evaluates if the inserters are to be activated. This way, the inserters get sent only "on or off" via the circuit network and not every inserter has to evaluate the condition by itself.
 
-
-
 ### II. Where to start with clocking?
 
-Clocking is especially beneficial for inserters that are active often but not all the time. 
+Clocking is especially beneficial for inserters that are active often but not all the time. Connection inserters to a circuit network and clocking them costs control behavior time and circuit network time. It is not free and not in all situations clocking is actually an UPS improvement.
 
 Prime candidates are inserters inserting into science assemblers or taking out from them.
 
 As most inserters are worth clocking, below follows a list of cases where clocking is often not worth it or pretty difficult to make it worth it. As a beginner, you should leave those cases aside and start with clocking other stuff.
 
 - Inserters that are active all or most of the time or inserter into very fast machines are usually not worth clocking. This is especially true for anything around green chips. The throughput for q5 stacks inserters is 120/sec from chest to chest (8 ticks per swing) and around 80/sec from or to an belt (12 ticks per swing. Depending on the specific case, it can be 11 or 13 ticks as well). If an inserter is close to those values, don't clock them.
+- Don't clock inserters that are active very rarely. Circuit behavior has a constant overhead so if the inserter respectively the machine the inserter is looking at is not all that active, the overhead may exceed the clocking benefit.
 - Some items are difficult to clock due to low or limiting input and output buffers and/or odd ratios along the production chain. This is especially true for things produced in EMPs as they allow for 175% production bonus. This makes aligning inputs and outputs via clocking very difficult. Hence, red chips and supercapacitors/superconductors are very hard to clock.
 - Direct insertion from plastic into LDS and LDS into multiple yellow science assemblers is also difficult to clock.
 
-### III. Best practices
+### III. Wake-up list debug view
+
+Enabling "show-wakeup-lists" in the debug view shows you the lines which wakeup-lists the inserters are subscribed to. The color is only the direction of the subscription ("take from" or "insert into"). The debug view also shows the activity in the wakeup-lists by making the lines flicker. It is the flickering of the lines that costs UPS because each flicker means that the inserter checked if it has something to do. Stable lines do not cost UPS.
+
+### IV. Best practices
+
+Below is a list of tips and tricks to make the clocking life easier and more efficient at the start:
+
+- Clocks are cheap. It's the entities connected to the clocks and the activity in the circuit network that costs UPS.
+- You can use radars for a central clock and have one radar per build forwarding the signal from the central clock. As clocks are very cheap, you don't save UPS by doing this but you also don't lose UPS if you only have one radar per build. If you use multiple radars per build to avoid having to drag wires across everything, this convenience comes at the cost of UPS.
+- Longer activations are cheaper than activations more often and shorter. E.g., outputting several stacks from a science assembler at once is better than activating the inserter every time 16 items are ready. However, outputting multiple stacks at once requires respective clocking of the inputs. Hence, it is a (very) advanced clocking technique.
+- Separate circuit networks per signal. So for red science, if you make a clock for copper plates and a clock for red science, the red science and the copper plate inserters should all be connected separately, i.e., one circuit network for the red science inserters and one network for the copper plates. It helps with UPS if the inserters only have to evaluate the signal relevant to them and nothing else.
+- If you want to forward a signal and the wire can't reach, constant combinators are the cheapest option to forward wires. They are cheaper than power poles.
+- Disconnect the checkboxes for wire networks you don't need. So if you connect a green wire to an inserter to receive a signal, uncheck the "output" green wire connection.
