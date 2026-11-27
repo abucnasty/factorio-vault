@@ -3,6 +3,10 @@ draft: true
 ---
 This article aims at providing an introduction to UPS optimised building in Factorio. Where to start, what are the priorities and what helps the most why. This article only covers the basics in each section and provides general guidelines. UPS optimisation is very specific: if you dig deeper, there are many exceptions and edge cases where things are differently.
 
+
+
+Also, please note that this article is trying to help you with the best current knowledge. There may be better or other ways to achieve better performance. We as a community are learning every day.
+
 ## Executive summary/TL;DR
 
 Building more efficiently yields the highest UPS gains: Reduce the number of item transfers as much as possible. Use direct insertion to avoid chest-to-belt-transfers. Use as few splitters and belt merges as possible via clever routing.
@@ -92,6 +96,8 @@ Below is a list of tips and tricks to make the clocking life easier and more eff
 - Rough clocks already provide a lot of UPS benefit. Although perfect clocks have the most benefit, especially at the start it can be a good practice to start with "good enough" clocks to get something done and finished and learn along the progress. "Good enough" means longer activation times and additional activations to avoid the build tripping.
 - You can use radars for a central clock and have one radar per build forwarding the signal from the central clock \[Future link: Fulgora benchmark with on patch clock vs radar clock]. As clocks are very cheap, you don't save UPS by doing this but you also don't lose UPS if you only have one radar per build. If you use multiple radars per build to avoid having to drag wires across everything, this convenience comes at the cost of UPS.
 - Longer activations are cheaper than activations more often and shorter. E.g., outputting several stacks from a science assembler at once is better than activating the inserter every time 16 items are ready. However, outputting multiple stacks at once requires respective clocking of the inputs. Hence, it is a (very) advanced clocking technique.
-- Separate circuit networks per signal. So for red science, if you make a clock for copper plates and a clock for red science, the red science and the copper plate inserters should all be connected separately, i.e., one circuit network for the red science inserters and one network for the copper plates. It helps with UPS if the inserters only have to evaluate the signal relevant to them and nothing else.
+- Separate circuit networks per signal. So for red science, if you make a clock for copper plates and a clock for red science, the red science and the copper plate inserters should all be connected separately, i.e., one circuit network for the red science inserters and one network for the copper plates. It helps with UPS if the inserters only have to evaluate the signal relevant to them and nothing else. Depending on your PC, cutting circuit networks down into smaller ones instead of large ones (especially around the hub), can help with performance. However, it appears that this is highly dependent on the system Factorio is run on.
+
+  Having a separate circuit network per signal also allows for easier inserter configuration. If there is only one signal in the network, you can set any inserter to activate if "anything > 0". So you don't need to check if the respective inserter has the right configuration because all inserters use the same configuration.
 - If you want to forward a signal and the wire can't reach, constant combinators are the cheapest option to forward wires. They are cheaper than power poles.
 - Disconnect the checkboxes for wire networks you don't need. So if you connect a green wire to an inserter to receive a signal, uncheck the "output" green wire connection.
