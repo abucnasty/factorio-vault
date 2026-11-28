@@ -3,11 +3,9 @@ draft: true
 ---
 This article aims at providing an introduction to UPS optimised building in Factorio. Where to start, what are the priorities and what helps the most why. This article only covers the basics in each section and provides general guidelines. UPS optimisation is very specific: if you dig deeper, there are many exceptions and edge cases where things are differently.
 
-
-
 Also, please note that this article is trying to help you with the best current knowledge. There may be better or other ways to achieve better performance. We as a community are learning every day.
 
-## Executive summary/TL;DR
+## Summary
 
 Building more efficiently yields the highest UPS gains: Reduce the number of item transfers as much as possible. Use direct insertion to avoid chest-to-belt-transfers. Use as few splitters and belt merges as possible via clever routing.
 
@@ -15,7 +13,7 @@ Only once you have your build streamlined, it is worthwile to look into clocking
 
 ## Basics
 
-Each tick Factorio has to calculate the state of the game and advance everything one tick forward: Machines, items, belts, inserters etc. The calculation of these things takes time. Factorio runs at 60 updates per second, so the game has \~16 milliseconds to calculate and render each frame. If the game takes longer than 16 milliseconds for an update, the game starts to run slower than 60 UPS. Instead, the game runs the simulation at the maximum speed your computer can handle.
+Each tick Factorio has to calculate the state of the game and advance everything one tick forward: Machines, items, belts, inserters etc. The calculation of these things takes time. Factorio runs at 60 updates per second, so the game has 1/60 * 1000 = \~16.667 milliseconds to calculate and render each frame. If the game takes longer than 16.667 milliseconds for an update, the game starts to run slower than 60 UPS. Instead, the game runs the simulation at the maximum speed your computer can handle.
 
 Therefore, to keep the game at 60 UPS, you have to reduce the amount of calculations the game has to do each tick. And that is the first and most important rule of UPS optimisation:
 
